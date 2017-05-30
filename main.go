@@ -456,7 +456,7 @@ func publish(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
-	args = append(args, config.Version)
+	args = append(args, "v"+config.Version)
 	return command("git", args...)
 }
 

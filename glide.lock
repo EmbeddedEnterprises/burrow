@@ -1,10 +1,23 @@
-hash: 170bf1f9b0a87e35b027593c93df8a4d7dd3f2268cdc32d07cf6c6524981e5dc
-updated: 2017-05-30T18:51:52.893643234+02:00
+hash: b8ed30f9f4471851efa4f0963f03df636ef3493d7d35af9ff2b44d7fc5678407
+updated: 2017-05-30T19:56:44.649174767+02:00
 imports:
 - name: github.com/fatih/color
   version: 570b54cabe6b8eb0bc2dfce68d964677d63b5260
 - name: github.com/go-yaml/yaml
   version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
+- name: github.com/mattn/go-colorable
+  version: 5411d3eea5978e6cdc258b30de592b60df6aba96
+  repo: https://github.com/mattn/go-colorable
+- name: github.com/mattn/go-isatty
+  version: 57fdcb988a5c543893cc61bce354a6e24ab70022
+  repo: https://github.com/mattn/go-isatty
+- name: github.com/mattn/go-shellwords
+  version: 02e3cf038dcea8290e44424da473dd12be796a8a
 - name: github.com/urfave/cli
   version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
+- name: golang.org/x/sys
+  version: e24f485414aeafb646f6fca458b0bf869c0880a1
+  repo: https://go.googlesource.com/sys
+  subpackages:
+  - unix
 testImports: []

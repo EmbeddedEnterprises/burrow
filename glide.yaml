@@ -5,3 +5,5 @@ import:
 - package: github.com/go-yaml/yaml
 - package: github.com/fatih/color
   version: ^1.5.0
+- package: github.com/mattn/go-shellwords
+  version: ^1.0.3

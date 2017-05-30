@@ -1,5 +1,5 @@
 name: burrow
-version: 0.0.1
+version: 0.0.2
 package:
   include:
 args:
@@ -15,4 +15,4 @@ args:
     update:
     get:
   git:
-    tag: [-s, -m, ""]
+    tag: "-s -m 'Update version'"

@@ -34,6 +34,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/go-yaml/yaml"
+	"github.com/mattn/go-shellwords"
 	"github.com/urfave/cli"
 )
 
@@ -50,21 +51,21 @@ type Config struct {
 		Include []string
 	}
 	Args struct {
-		Run []string
+		Run string
 		Go  struct {
-			Test  []string
-			Build []string
-			Doc   []string
-			Vet   []string
-			Fmt   []string
+			Test  string
+			Build string
+			Doc   string
+			Vet   string
+			Fmt   string
 		}
 		Glide struct {
-			Install []string
-			Update  []string
-			Get     []string
+			Install string
+			Update  string
+			Get     string
 		}
 		Git struct {
-			Tag []string
+			Tag string
 		}
 	}
 }
@@ -236,7 +237,12 @@ func get(context *cli.Context) error {
 
 	args := []string{}
 	args = append(args, "get")
-	args = append(args, config.Args.Glide.Get...)
+	user_args, err := shellwords.Parse(config.Args.Glide.Get)
+	if err != nil {
+		log(LOG_ERR, "get", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
 	args = append(args, dep)
 
 	return command("glide", args...)
@@ -248,7 +254,12 @@ func fetch(context *cli.Context) error {
 	gopath := os.Getenv("GOPATH")
 	args := []string{}
 	args = append(args, "install")
-	args = append(args, config.Args.Glide.Install...)
+	user_args, err := shellwords.Parse(config.Args.Glide.Install)
+	if err != nil {
+		log(LOG_ERR, "fetch", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
 	return command(gopath+"/bin/glide", args...)
 }
 
@@ -258,7 +269,12 @@ func update(context *cli.Context) error {
 	gopath := os.Getenv("GOPATH")
 	args := []string{}
 	args = append(args, "update")
-	args = append(args, config.Args.Glide.Update...)
+	user_args, err := shellwords.Parse(config.Args.Glide.Update)
+	if err != nil {
+		log(LOG_ERR, "update", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
 	return command(gopath+"/bin/glide", args...)
 }
 
@@ -274,7 +290,12 @@ func run(context *cli.Context) error {
 	// add --example and -- for user args
 
 	args := []string{}
-	args = append(args, config.Args.Run...)
+	user_args, err := shellwords.Parse(config.Args.Run)
+	if err != nil {
+		log(LOG_ERR, "run", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
 	args = append(args, context.Args()...)
 	return command("./bin/"+config.Name, args...)
 }
@@ -291,8 +312,13 @@ func test(context *cli.Context) error {
 
 	args := []string{}
 	args = append(args, "test")
-	args = append(args, config.Args.Go.Test...)
-	err := command("go", args...)
+	user_args, err := shellwords.Parse(config.Args.Go.Test)
+	if err != nil {
+		log(LOG_ERR, "test", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
+	err = command("go", args...)
 	if err == nil {
 		UpdateTarget("test")
 	}
@@ -312,8 +338,13 @@ func build(context *cli.Context) error {
 
 	args := []string{}
 	args = append(args, "build", "-o", "./bin/"+config.Name)
-	args = append(args, config.Args.Go.Build...)
-	err := command("go", args...)
+	user_args, err := shellwords.Parse(config.Args.Go.Build)
+	if err != nil {
+		log(LOG_ERR, "build", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
+	err = command("go", args...)
 	if err == nil {
 		UpdateTarget("build")
 	}
@@ -343,8 +374,13 @@ func install(context *cli.Context) error {
 
 	args := []string{}
 	args = append(args, "install")
-	args = append(args, config.Args.Go.Build...)
-	err := command("go", args...)
+	user_args, err := shellwords.Parse(config.Args.Go.Build)
+	if err != nil {
+		log(LOG_ERR, "install", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
+	err = command("go", args...)
 	if err == nil {
 		UpdateTarget("install")
 	}
@@ -405,9 +441,21 @@ func publish(context *cli.Context) error {
 		return err
 	}
 	log(LOG_INFO, "publish", "Publishing new version tag in git")
+
+	err := command("git", "diff-index", "--quiet", "HEAD", "--")
+	if err != nil {
+		log(LOG_ERR, "publish", "You have unstaged changes, commit them to proceed!")
+		return cli.NewExitError("", EXIT_ACTION)
+	}
+
 	args := []string{}
 	args = append(args, "tag", "-f")
-	args = append(args, config.Args.Git.Tag...)
+	user_args, err := shellwords.Parse(config.Args.Git.Tag)
+	if err != nil {
+		log(LOG_ERR, "publish", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
 	args = append(args, config.Version)
 	return command("git", args...)
 }
@@ -436,8 +484,13 @@ func doc(context *cli.Context) error {
 
 	args := []string{}
 	args = append(args, "doc")
-	args = append(args, config.Args.Go.Doc...)
-	err := command("go", args...)
+	user_args, err := shellwords.Parse(config.Args.Go.Doc)
+	if err != nil {
+		log(LOG_ERR, "doc", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
+	err = command("go", args...)
 	if err == nil {
 		UpdateTarget("doc")
 	}
@@ -456,9 +509,14 @@ func format(context *cli.Context) error {
 
 	args := []string{}
 	args = append(args, "-l", "-w")
-	args = append(args, config.Args.Go.Fmt...)
+	user_args, err := shellwords.Parse(config.Args.Go.Fmt)
+	if err != nil {
+		log(LOG_ERR, "format", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
 	args = append(args, GetCodefiles()...)
-	err := command("gofmt", args...)
+	err = command("gofmt", args...)
 	if err == nil {
 		UpdateTarget("format")
 	}
@@ -477,9 +535,14 @@ func check(context *cli.Context) error {
 
 	args := []string{}
 	args = append(args, "tool", "vet")
-	args = append(args, config.Args.Go.Vet...)
+	user_args, err := shellwords.Parse(config.Args.Go.Vet)
+	if err != nil {
+		log(LOG_ERR, "check", "Failed to read user arguments from config file: %s", err)
+		return nil
+	}
+	args = append(args, user_args...)
 	args = append(args, GetCodefiles()...)
-	err := command("go", args...)
+	err = command("go", args...)
 	if err == nil {
 		UpdateTarget("check")
 	}

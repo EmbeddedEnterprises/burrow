@@ -1,0 +1,7 @@
+package: github.com/EmbeddedEnterprises/burrow
+import:
+- package: github.com/urfave/cli
+  version: ^1.19.1
+- package: github.com/go-yaml/yaml
+- package: github.com/fatih/color
+  version: ^1.5.0

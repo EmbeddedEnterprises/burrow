@@ -67,7 +67,9 @@ func (self Logger) Write(payload []byte) (int, error) {
 	message := string(payload[:])
 	lines := strings.Split(message, "\n")
 	for _, line := range lines {
-		Log(self.level, self.target, line)
+		if line != "" {
+			Log(self.level, self.target, line)
+		}
 	}
 	return len(payload), nil
 }

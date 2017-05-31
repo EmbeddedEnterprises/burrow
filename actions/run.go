@@ -46,5 +46,5 @@ func Run(context *cli.Context) error {
 	}
 	args = append(args, user_args...)
 	args = append(args, context.Args()...)
-	return burrow.Exec("./bin/"+burrow.Config.Name, args...)
+	return burrow.Exec("run", "./bin/"+burrow.Config.Name, args...)
 }

@@ -53,7 +53,7 @@ func Build(context *cli.Context) error {
 	}
 	args = append(args, user_args...)
 
-	err = burrow.Exec("go", args...)
+	err = burrow.Exec("build", "go", args...)
 	if err == nil {
 		burrow.UpdateTarget("build", outputs)
 	}

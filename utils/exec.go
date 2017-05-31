@@ -22,21 +22,21 @@
 package burrow
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 
 	"github.com/urfave/cli"
 )
 
-func Exec(comm string, args ...string) error {
+func Exec(target string, comm string, args ...string) error {
 	cmd := exec.Command(comm, args...)
 	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = NewLogger(target, LOG_INFO)
+	cmd.Stderr = NewLogger(target, LOG_WARN)
 
 	if err := cmd.Run(); err != nil {
-		return cli.NewExitError(fmt.Sprintf("Error running action: %v", err), EXIT_ACTION)
+		Log(LOG_ERR, target, "Error running action: %v", err)
+		return cli.NewExitError("", EXIT_ACTION)
 	}
 	return nil
 }

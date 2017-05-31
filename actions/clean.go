@@ -33,7 +33,7 @@ func Clean(context *cli.Context) error {
 	burrow.LoadConfig()
 
 	burrow.Log(burrow.LOG_INFO, "clean", "Cleaning build artifacts")
-	if err := burrow.Exec("go", "clean"); err != nil {
+	if err := burrow.Exec("clean", "go", "clean"); err != nil {
 		return err
 	}
 

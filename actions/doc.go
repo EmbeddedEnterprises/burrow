@@ -30,6 +30,7 @@ import (
 func Doc(context *cli.Context) error {
 	burrow.LoadConfig()
 
+	// TODO: add build artifacts
 	outputs := []string{}
 
 	if burrow.IsTargetUpToDate("doc", outputs) {
@@ -47,7 +48,7 @@ func Doc(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
-	err = burrow.Exec("go", args...)
+	err = burrow.Exec("doc", "go", args...)
 	if err == nil {
 		burrow.UpdateTarget("doc", outputs)
 	}

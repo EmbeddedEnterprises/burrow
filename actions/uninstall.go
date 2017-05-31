@@ -29,5 +29,5 @@ import (
 func Uninstall(context *cli.Context) error {
 	burrow.LoadConfig()
 	burrow.Log(burrow.LOG_INFO, "uninstall", "Uninstalling application from GOPATH")
-	return burrow.Exec("go", "clean", "-i")
+	return burrow.Exec("uninstall", "go", "clean", "-i")
 }

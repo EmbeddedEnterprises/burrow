@@ -48,7 +48,7 @@ func Format(context *cli.Context) error {
 	}
 	args = append(args, user_args...)
 	args = append(args, burrow.GetCodefiles()...)
-	err = burrow.Exec("gofmt", args...)
+	err = burrow.Exec("format", "gofmt", args...)
 	if err == nil {
 		burrow.UpdateTarget("format", outputs)
 	}

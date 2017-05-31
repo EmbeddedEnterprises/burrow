@@ -42,5 +42,5 @@ func Fetch(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
-	return burrow.Exec(gopath+"/bin/glide", args...)
+	return burrow.Exec("fetch", gopath+"/bin/glide", args...)
 }

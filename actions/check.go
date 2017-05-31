@@ -48,7 +48,7 @@ func Check(context *cli.Context) error {
 	}
 	args = append(args, user_args...)
 	args = append(args, burrow.GetCodefiles()...)
-	err = burrow.Exec("go", args...)
+	err = burrow.Exec("check", "go", args...)
 	if err == nil {
 		burrow.UpdateTarget("check", outputs)
 	}

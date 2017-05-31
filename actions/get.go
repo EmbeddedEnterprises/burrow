@@ -48,5 +48,5 @@ func Get(context *cli.Context) error {
 	args = append(args, user_args...)
 	args = append(args, dep)
 
-	return burrow.Exec("glide", args...)
+	return burrow.Exec("get", "glide", args...)
 }

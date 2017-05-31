@@ -34,7 +34,7 @@ func Publish(context *cli.Context) error {
 	}
 	burrow.Log(burrow.LOG_INFO, "publish", "Publishing new version tag in git")
 
-	err := burrow.Exec("git", "diff-index", "--quiet", "HEAD", "--")
+	err := burrow.Exec("publish", "git", "diff-index", "--quiet", "HEAD", "--")
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "publish", "You have unstaged changes, commit them to proceed!")
 		return cli.NewExitError("", burrow.EXIT_ACTION)
@@ -49,5 +49,5 @@ func Publish(context *cli.Context) error {
 	}
 	args = append(args, user_args...)
 	args = append(args, "v"+burrow.Config.Version)
-	return burrow.Exec("git", args...)
+	return burrow.Exec("publish", "git", args...)
 }

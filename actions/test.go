@@ -47,7 +47,7 @@ func Test(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
-	err = burrow.Exec("go", args...)
+	err = burrow.Exec("test", "go", args...)
 	if err == nil {
 		burrow.UpdateTarget("test", outputs)
 	}

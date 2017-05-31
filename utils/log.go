@@ -24,6 +24,7 @@ package burrow
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -50,4 +51,23 @@ func Log(level LogLevel, target string, format string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, format+"\n", args...)
 }
 
-// TODO: Add log writer for Stdout replacement
+type Logger struct {
+	target string
+	level  LogLevel
+}
+
+func NewLogger(target string, level LogLevel) Logger {
+	return Logger{
+		target: target,
+		level:  level,
+	}
+}
+
+func (self Logger) Write(payload []byte) (int, error) {
+	message := string(payload[:])
+	lines := strings.Split(message, "\n")
+	for _, line := range lines {
+		Log(self.level, self.target, line)
+	}
+	return len(payload), nil
+}

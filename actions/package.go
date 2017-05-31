@@ -61,7 +61,7 @@ func Package(context *cli.Context) error {
 	args = append(args, "czf", outputs[0], "./bin/"+burrow.Config.Name)
 	args = append(args, burrow.Config.Package.Include...)
 
-	err := burrow.Exec("tar", args...)
+	err := burrow.Exec("package", "tar", args...)
 	if err == nil {
 		burrow.UpdateTarget("package", outputs)
 	}

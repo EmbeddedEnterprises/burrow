@@ -50,7 +50,7 @@ func Package(context *cli.Context) error {
 
 	outputs := []string{fmt.Sprintf("./package/%s-%s.tar.gz", burrow.Config.Name, burrow.Config.Version)}
 
-	if burrow.IsTargetUpToDate("package", outputs) {
+	if burrow.IsTargetUpToDate("package", outputs) && !context.Bool("force") {
 		burrow.Log(burrow.LOG_INFO, "package", "Package is up-to-date")
 		return nil
 	}

@@ -33,7 +33,9 @@ func Doc(context *cli.Context) error {
 	// TODO: add build artifacts
 	outputs := []string{}
 
-	if burrow.IsTargetUpToDate("doc", outputs) {
+	// TODO: godoc is so broken, we have to do hard work here to make it usable...
+
+	if burrow.IsTargetUpToDate("doc", outputs) && !context.Bool("force") {
 		burrow.Log(burrow.LOG_INFO, "doc", "Documentation is up-to-date")
 		return nil
 	}
@@ -48,6 +50,7 @@ func Doc(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
+	args = append(args, burrow.GetSecondLevelArgs()...)
 	err = burrow.Exec("doc", "go", args...)
 	if err == nil {
 		burrow.UpdateTarget("doc", outputs)

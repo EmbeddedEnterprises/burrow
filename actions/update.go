@@ -41,5 +41,6 @@ func Update(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
+	args = append(args, burrow.GetSecondLevelArgs()...)
 	return burrow.Exec("update", gopath+"/bin/glide", args...)
 }

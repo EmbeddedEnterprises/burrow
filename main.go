@@ -28,10 +28,18 @@ import (
 	"github.com/urfave/cli"
 )
 
-// TODO: Add -f, --force to all cached target to disable build cache
-// TODO: Add -- to every target to enable argument passing to underlying program
-
 func main() {
+	force_flag := cli.BoolFlag{
+		Name:  "force, f",
+		Usage: "Forces this action to be run, even if cached data is available",
+	}
+	example_flag := cli.StringFlag{
+		Name:  "example, e",
+		Usage: "Run an example (specified by name) instead of the application itself",
+	}
+
+	// TODO: Add clone action
+
 	app := cli.NewApp()
 	app.Name = "burrow"
 	app.Usage = "build glide managed go programs"
@@ -71,28 +79,28 @@ func main() {
 		{
 			Name:    "run",
 			Aliases: []string{"r"},
-			Flags:   []cli.Flag{},
+			Flags:   []cli.Flag{example_flag},
 			Usage:   "Build and run the application",
 			Action:  burrow.Run,
 		},
 		{
 			Name:    "test",
 			Aliases: []string{"t"},
-			Flags:   []cli.Flag{},
+			Flags:   []cli.Flag{force_flag},
 			Usage:   "Run all existing tests of the application",
 			Action:  burrow.Test,
 		},
 		{
 			Name:    "build",
 			Aliases: []string{"b"},
-			Flags:   []cli.Flag{},
+			Flags:   []cli.Flag{force_flag},
 			Usage:   "Build the application",
 			Action:  burrow.Build,
 		},
 		{
 			Name:    "install",
 			Aliases: []string{"i", "in", "inst"},
-			Flags:   []cli.Flag{},
+			Flags:   []cli.Flag{force_flag},
 			Usage:   "Install the application in the GOPATH",
 			Action:  burrow.Install,
 		},
@@ -106,7 +114,7 @@ func main() {
 		{
 			Name:    "package",
 			Aliases: []string{"pack"},
-			Flags:   []cli.Flag{},
+			Flags:   []cli.Flag{force_flag},
 			Usage:   "Create a .tar.gz containing the binary",
 			Action:  burrow.Package,
 		},
@@ -127,21 +135,21 @@ func main() {
 		{
 			Name:    "doc",
 			Aliases: []string{},
-			Flags:   []cli.Flag{},
+			Flags:   []cli.Flag{force_flag},
 			Usage:   "Generate the godoc documentation for this project",
 			Action:  burrow.Doc,
 		},
 		{
 			Name:    "format",
 			Aliases: []string{"fmt"},
-			Flags:   []cli.Flag{},
+			Flags:   []cli.Flag{force_flag},
 			Usage:   "Format the code of this project with gofmt",
 			Action:  burrow.Format,
 		},
 		{
 			Name:    "check",
 			Aliases: []string{},
-			Flags:   []cli.Flag{},
+			Flags:   []cli.Flag{force_flag},
 			Usage:   "Check the code with go vet",
 			Action:  burrow.Check,
 		},

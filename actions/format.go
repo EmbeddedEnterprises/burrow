@@ -32,7 +32,7 @@ func Format(context *cli.Context) error {
 
 	outputs := []string{}
 
-	if burrow.IsTargetUpToDate("format", outputs) {
+	if burrow.IsTargetUpToDate("format", outputs) && !context.Bool("force") {
 		burrow.Log(burrow.LOG_INFO, "format", "Code formatting is up-to-date")
 		return nil
 	}
@@ -47,6 +47,7 @@ func Format(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
+	args = append(args, burrow.GetSecondLevelArgs()...)
 	args = append(args, burrow.GetCodefiles()...)
 	err = burrow.Exec("format", "gofmt", args...)
 	if err == nil {

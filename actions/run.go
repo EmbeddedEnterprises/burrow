@@ -34,17 +34,23 @@ func Run(context *cli.Context) error {
 		return err
 	}
 
-	burrow.Log(burrow.LOG_INFO, "run", "Running project")
+	example := context.String("example")
 
-	// TODO: Add --example
-
-	args := []string{}
 	user_args, err := shellwords.Parse(burrow.Config.Args.Run)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "run", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
+
+	args := []string{}
 	args = append(args, user_args...)
-	args = append(args, context.Args()...)
-	return burrow.Exec("run", "./bin/"+burrow.Config.Name, args...)
+	args = append(args, burrow.GetSecondLevelArgs()...)
+
+	if example == "" {
+		burrow.Log(burrow.LOG_INFO, "run", "Running project")
+		return burrow.Exec("run", "./bin/"+burrow.Config.Name, args...)
+	} else {
+		burrow.Log(burrow.LOG_INFO, "run", "Running example %s", example)
+		return burrow.Exec("run", "./bin/example/"+example, args...)
+	}
 }

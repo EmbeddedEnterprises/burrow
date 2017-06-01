@@ -32,7 +32,7 @@ func Check(context *cli.Context) error {
 
 	outputs := []string{}
 
-	if burrow.IsTargetUpToDate("check", outputs) {
+	if burrow.IsTargetUpToDate("check", outputs) && !context.Bool("force") {
 		burrow.Log(burrow.LOG_INFO, "check", "Code has already been checked")
 		return nil
 	}
@@ -47,6 +47,7 @@ func Check(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
+	args = append(args, burrow.GetSecondLevelArgs()...)
 	args = append(args, burrow.GetCodefiles()...)
 	err = burrow.Exec("check", "go", args...)
 	if err == nil {

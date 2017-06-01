@@ -23,6 +23,8 @@ package burrow
 
 import (
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/EmbeddedEnterprises/burrow/utils"
 	"github.com/mattn/go-shellwords"
@@ -33,8 +35,18 @@ func Build(context *cli.Context) error {
 	burrow.LoadConfig()
 
 	outputs := []string{"./bin/" + burrow.Config.Name}
+	sources := []string{"main.go"}
 
-	if burrow.IsTargetUpToDate("build", outputs) {
+	_ = filepath.Walk("./example", func(path string, f os.FileInfo, err error) error {
+		if strings.HasSuffix(path, ".go") && !f.IsDir() {
+			name := f.Name()
+			outputs = append(outputs, "./bin/example/"+name[:len(name)-3])
+			sources = append(sources, path)
+		}
+		return nil
+	})
+
+	if burrow.IsTargetUpToDate("build", outputs) && !context.Bool("force") {
 		burrow.Log(burrow.LOG_INFO, "build", "Build is up-to-date")
 		return nil
 	}
@@ -43,17 +55,22 @@ func Build(context *cli.Context) error {
 
 	_ = os.Mkdir("./bin", 0755)
 
-	args := []string{}
-	args = append(args, "build", "-o", outputs[0])
-
 	user_args, err := shellwords.Parse(burrow.Config.Args.Go.Build)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "build", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
-	args = append(args, user_args...)
+	build_args := burrow.GetSecondLevelArgs()
 
-	err = burrow.Exec("build", "go", args...)
+	for i, output := range outputs {
+		args := []string{}
+		args = append(args, "build", "-o", output, sources[i])
+		args = append(args, user_args...)
+		args = append(args, build_args...)
+
+		err = burrow.Exec("build", "go", args...)
+	}
+
 	if err == nil {
 		burrow.UpdateTarget("build", outputs)
 	}

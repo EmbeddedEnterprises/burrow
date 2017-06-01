@@ -44,7 +44,7 @@ func Install(context *cli.Context) error {
 
 	outputs := []string{}
 
-	if burrow.IsTargetUpToDate("install", outputs) {
+	if burrow.IsTargetUpToDate("install", outputs) && !context.Bool("force") {
 		burrow.Log(burrow.LOG_INFO, "install", "Installation is up-to-date")
 		return nil
 	}
@@ -58,6 +58,7 @@ func Install(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
+	args = append(args, burrow.GetSecondLevelArgs()...)
 	err = burrow.Exec("install", "go", args...)
 	if err == nil {
 		burrow.UpdateTarget("install", outputs)

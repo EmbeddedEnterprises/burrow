@@ -19,38 +19,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package burrow
+package main
 
 import (
+	"fmt"
+
 	"github.com/EmbeddedEnterprises/burrow/utils"
-	"github.com/mattn/go-shellwords"
-	"github.com/urfave/cli"
 )
 
-func Test(context *cli.Context) error {
-	burrow.LoadConfig()
-
-	outputs := []string{}
-
-	if burrow.IsTargetUpToDate("test", outputs) && !context.Bool("force") {
-		burrow.Log(burrow.LOG_INFO, "test", "Tests are up-to-date")
-		return nil
-	}
-
-	burrow.Log(burrow.LOG_INFO, "test", "Running tests for project")
-
-	args := []string{}
-	args = append(args, "test")
-	user_args, err := shellwords.Parse(burrow.Config.Args.Go.Test)
-	if err != nil {
-		burrow.Log(burrow.LOG_ERR, "test", "Failed to read user arguments from config file: %s", err)
-		return nil
-	}
-	args = append(args, user_args...)
-	args = append(args, burrow.GetSecondLevelArgs()...)
-	err = burrow.Exec("test", "go", args...)
-	if err == nil {
-		burrow.UpdateTarget("test", outputs)
-	}
-	return err
+func main() {
+	fmt.Println(burrow.GetCodefiles())
 }

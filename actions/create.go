@@ -31,6 +31,7 @@ func Create(context *cli.Context) error {
 	// TODO: Maybe create lib.go for lib? What should it contain?
 	// TODO: Create burrow.yaml - with stdin read
 	// TODO: Create README.md
+	// TODO: Create example folder
 	// TODO: Create .gitignore
 	return nil
 }

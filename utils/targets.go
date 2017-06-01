@@ -32,6 +32,7 @@ import (
 	"strings"
 
 	"github.com/go-yaml/yaml"
+	"github.com/urfave/cli"
 )
 
 var targetState = map[string]bool{}
@@ -133,4 +134,20 @@ func GetCodefilesWithMtime(outputs []string) map[string]int64 {
 	}
 
 	return code_files
+}
+
+func GetSecondLevelArgs() cli.Args {
+	args := os.Args
+	second := cli.Args{}
+
+	double_dash_found := false
+	for _, val := range args {
+		if val == "--" {
+			double_dash_found = true
+		} else if double_dash_found {
+			second = append(second, val)
+		}
+	}
+
+	return second
 }

@@ -48,6 +48,7 @@ func Publish(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
+	args = append(args, burrow.GetSecondLevelArgs()...)
 	args = append(args, "v"+burrow.Config.Version)
 	return burrow.Exec("publish", "git", args...)
 }

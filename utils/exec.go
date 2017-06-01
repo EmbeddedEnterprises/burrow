@@ -31,8 +31,14 @@ import (
 func Exec(target string, comm string, args ...string) error {
 	cmd := exec.Command(comm, args...)
 	cmd.Stdin = os.Stdin
-	cmd.Stdout = NewLogger(target, LOG_INFO)
-	cmd.Stderr = NewLogger(target, LOG_WARN)
+
+	if target == "" {
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+	} else {
+		cmd.Stdout = NewLogger(target, LOG_INFO)
+		cmd.Stderr = NewLogger(target, LOG_WARN)
+	}
 
 	if err := cmd.Run(); err != nil {
 		Log(LOG_ERR, target, "Error running action: %v", err)

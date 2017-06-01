@@ -38,8 +38,6 @@ func main() {
 		Usage: "Run an example (specified by name) instead of the application itself",
 	}
 
-	// TODO: Add clone action
-
 	app := cli.NewApp()
 	app.Name = "burrow"
 	app.Usage = "build glide managed go programs"

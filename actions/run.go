@@ -48,9 +48,9 @@ func Run(context *cli.Context) error {
 
 	if example == "" {
 		burrow.Log(burrow.LOG_INFO, "run", "Running project")
-		return burrow.Exec("run", "./bin/"+burrow.Config.Name, args...)
+		return burrow.Exec("", "./bin/"+burrow.Config.Name, args...)
 	} else {
 		burrow.Log(burrow.LOG_INFO, "run", "Running example %s", example)
-		return burrow.Exec("run", "./bin/example/"+example, args...)
+		return burrow.Exec("", "./bin/example/"+example, args...)
 	}
 }

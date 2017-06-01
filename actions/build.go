@@ -34,8 +34,14 @@ import (
 func Build(context *cli.Context) error {
 	burrow.LoadConfig()
 
-	outputs := []string{"./bin/" + burrow.Config.Name}
-	sources := []string{"main.go"}
+	outputs := []string{}
+	sources := []string{}
+
+	_, err := os.Stat("main.go")
+	if err == nil {
+		outputs = append(outputs, "./bin/"+burrow.Config.Name)
+		sources = append(sources, "main.go")
+	}
 
 	_ = filepath.Walk("./example", func(path string, f os.FileInfo, err error) error {
 		if strings.HasSuffix(path, ".go") && !f.IsDir() {

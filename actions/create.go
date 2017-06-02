@@ -30,6 +30,7 @@ import (
 	"strings"
 
 	"github.com/EmbeddedEnterprises/burrow/utils"
+	"github.com/go-yaml/yaml"
 	"github.com/urfave/cli"
 )
 
@@ -37,6 +38,16 @@ const main = `package main
 
 func main() {
 }
+`
+
+const lib = `package %s
+`
+
+const readme = `# %s
+
+%s
+
+---
 `
 
 const gitignore = `*~
@@ -96,7 +107,10 @@ func Create(context *cli.Context) error {
 		reader := bufio.NewReader(os.Stdin)
 		project_license, err = reader.ReadString('\n')
 		project_license = project_license[:len(project_license)-1]
-		if err == nil && project_license != "" {
+
+		if project_license == "none" {
+			break
+		} else if err == nil && project_license != "" {
 			resp, err := http.Get(
 				"https://raw.githubusercontent.com/spdx/license-list-data/master/text/" + project_license + ".txt",
 			)
@@ -144,20 +158,38 @@ func Create(context *cli.Context) error {
 		}
 	}
 
-	fmt.Println()
-	fmt.Println(project_type)
-	fmt.Println(project_name)
-	fmt.Println(project_license)
-	fmt.Println(project_description)
-	fmt.Println(project_authors)
+	config := burrow.Configuration{}
+	config.Name = project_name
+	config.Version = "0.1.0"
+	config.Description = project_description
+	config.Authors = project_authors
+	config.License = project_license
+	config.Package.Include = []string{}
+	config.Args.Run = ""
+	config.Args.Go.Test = ""
+	config.Args.Go.Build = ""
+	config.Args.Go.Doc = ""
+	config.Args.Go.Vet = ""
+	config.Args.Go.Fmt = ""
+	config.Args.Glide.Install = ""
+	config.Args.Glide.Update = ""
+	config.Args.Glide.Get = ""
+	config.Args.Git.Tag = "-s -m 'Update version'"
+	ser, _ := yaml.Marshal(&config)
 
-	// mkdir example
-	// write burrow.yaml
-	// write README.md
-	// write .gitignore
-	// if bin write main
-	// if lib write lib.go with 'package <name>'
+	_ = os.Mkdir("example", 0755)
+	_ = ioutil.WriteFile("burrow.yaml", []byte(ser), 0644)
+	_ = ioutil.WriteFile("README.md", []byte(fmt.Sprintf(readme, project_name, project_description)), 0644)
+	_ = ioutil.WriteFile(".gitignore", []byte(gitignore), 0644)
 
-	// glide init
+	switch project_type {
+	case TYPE_BIN:
+		_ = ioutil.WriteFile("main.go", []byte(main), 0644)
+	case TYPE_LIB:
+		_ = ioutil.WriteFile("lib.go", []byte(fmt.Sprintf(lib, project_name)), 0644)
+	}
+
+	burrow.Exec("", "glide", "init")
+
 	return nil
 }

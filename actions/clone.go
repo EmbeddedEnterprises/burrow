@@ -22,45 +22,50 @@
 package burrow
 
 import (
+	"os"
+	"strings"
+
 	"github.com/EmbeddedEnterprises/burrow/utils"
 	"github.com/mattn/go-shellwords"
 	"github.com/urfave/cli"
 )
 
-func Install(context *cli.Context) error {
-	burrow.LoadConfig()
-	if err := Format(context); err != nil {
-		return err
-	}
-	if err := Check(context); err != nil {
-		return err
-	}
-	if err := Test(context); err != nil {
-		return err
-	}
-	if err := Build(context); err != nil {
-		return err
+func Clone(context *cli.Context) error {
+	options := context.Args()
+
+	if len(options) < 1 || len(options) > 2 {
+		burrow.Log(burrow.LOG_ERR, "clone", "Invalid number of arguments!")
 	}
 
-	outputs := []string{}
+	gopath := os.Getenv("GOPATH")
+	url := options[0]
+	destination := options[0]
 
-	if burrow.IsTargetUpToDate("install", outputs) && !context.Bool("force") {
-		burrow.Log(burrow.LOG_INFO, "install", "Installation is up-to-date")
-		return nil
+	if idx := strings.Index(destination, "://"); idx >= 0 {
+		destination = destination[idx+3:]
 	}
-	burrow.Log(burrow.LOG_INFO, "install", "Installing application in GOPATH")
+
+	if strings.HasSuffix(destination, ".git") {
+		destination = destination[:len(destination)-4]
+	}
+	destination = gopath + "/src/" + destination
+
+	tmp := strings.Split(destination, "/")
+	link := tmp[len(tmp)-1]
+
+	burrow.Log(burrow.LOG_INFO, "clone", "Cloning git repository into GOPATH...")
 
 	args := []string{}
-	args = append(args, "install")
-	user_args, err := shellwords.Parse(burrow.Config.Args.Go.Build)
+	args = append(args, "clone", url, destination)
+	user_args, err := shellwords.Parse(burrow.Config.Args.Git.Clone)
 	if err != nil {
-		burrow.Log(burrow.LOG_ERR, "install", "Failed to read user arguments from config file: %s", err)
+		burrow.Log(burrow.LOG_ERR, "clone", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
 	args = append(args, user_args...)
-	err = burrow.Exec("install", "go", args...)
-	if err == nil {
-		burrow.UpdateTarget("install", outputs)
+	if err := burrow.Exec("clone", "git", args...); err != nil {
+		return nil
 	}
-	return err
+
+	return os.Symlink(destination, link)
 }

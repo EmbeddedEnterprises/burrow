@@ -52,7 +52,8 @@ type Configuration struct {
 			Get     string
 		}
 		Git struct {
-			Tag string
+			Tag   string
+			Clone string
 		}
 	}
 }

@@ -175,6 +175,7 @@ func Create(context *cli.Context) error {
 	config.Args.Glide.Update = ""
 	config.Args.Glide.Get = ""
 	config.Args.Git.Tag = "-s -m 'Update version'"
+	config.Args.Git.Clone = ""
 	ser, _ := yaml.Marshal(&config)
 
 	_ = os.Mkdir("example", 0755)

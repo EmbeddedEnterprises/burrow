@@ -42,10 +42,32 @@ func main() {
 
 	// TODO: Add readme
 
+	cli.AppHelpTemplate = `Usage: {{.HelpName}} {{if .VisibleFlags}}[global options]{{end}}{{if .Commands}} command [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}
+
+{{.Usage}}
+{{if .Commands}}
+Commands:
+{{range .Commands}}{{if not .HideHelp}}   {{join .Names ", "}}{{ "\t"}}{{.Usage}}{{ "\n" }}{{end}}{{end}}{{end}}{{if .VisibleFlags}}
+Global options:
+   {{range .VisibleFlags}}{{.}}
+   {{end}}{{end}}{{if len .Authors}}
+Authors:
+   {{range .Authors}}{{ . }}{{end}}
+   {{end}}{{if .Commands}}
+{{.Name}} - {{.Copyright}}{{end}}
+`
+
 	app := cli.NewApp()
 	app.Name = "burrow"
-	app.Usage = "build glide managed go programs"
-	app.Version = "0.0.7"
+	app.Usage = "A go build system that uses glide for dependency management."
+	app.Version = "0.0.9"
+	app.Authors = []cli.Author{
+		cli.Author{
+			Name:  "Fin Christensen",
+			Email: "christensen.fin@gmail.com",
+		},
+	}
+	app.Copyright = "Copyright (c) 2017  EmbeddedEnterprises"
 	app.Action = func(context *cli.Context) error {
 		return cli.ShowAppHelp(context)
 	}
@@ -62,7 +84,7 @@ func main() {
 			Name:        "clone",
 			Aliases:     []string{},
 			Flags:       []cli.Flag{},
-			Usage:       "Clone a git repository into your GOPATH and create a symbolic link in your current location",
+			Usage:       "Clone a git repository into your GOPATH and create a symbolic link in your current location.",
 			Description: "This action clones a git repository (go-get url scheme) into your GOPATH and creates a symbolic link in the current directory.",
 			Action:      burrow.Clone,
 		},
@@ -70,7 +92,7 @@ func main() {
 			Name:        "get",
 			Aliases:     []string{},
 			Flags:       []cli.Flag{},
-			Usage:       "Install a dependency in the vendor folder and add it to the glide yaml",
+			Usage:       "Install a dependency in the vendor folder and add it to the glide yaml.",
 			Description: "This runs glide get in the current directory. The first argument should be the go-get url and any argument following -- get passed directly to glide.",
 			Action:      burrow.Get,
 		},
@@ -78,7 +100,7 @@ func main() {
 			Name:        "fetch",
 			Aliases:     []string{"ensure", "f", "e"},
 			Flags:       []cli.Flag{},
-			Usage:       "Get all dependencies from the lock file to reproduce a build",
+			Usage:       "Get all dependencies from the lock file to reproduce a build.",
 			Description: "This runs glide install in the current directory. Any arguments following -- get passed directly to glide.",
 			Action:      burrow.Fetch,
 		},
@@ -86,7 +108,7 @@ func main() {
 			Name:        "update",
 			Aliases:     []string{"u", "up"},
 			Flags:       []cli.Flag{},
-			Usage:       "Update all dependencies from the yaml file and update the lock file",
+			Usage:       "Update all dependencies from the yaml file and update the lock file.",
 			Description: "This runs glide update in the current directory. Any arguments following -- get passed directly to gilde.",
 			Action:      burrow.Update,
 		},
@@ -94,7 +116,7 @@ func main() {
 			Name:        "run",
 			Aliases:     []string{"r"},
 			Flags:       []cli.Flag{example_flag},
-			Usage:       "Build and run the application",
+			Usage:       "Build and run the application.",
 			Description: "This runs the compiled binary. Any arguments following -- will be directly passed to your application.",
 			Action:      burrow.Run,
 		},
@@ -102,7 +124,7 @@ func main() {
 			Name:        "test",
 			Aliases:     []string{"t"},
 			Flags:       []cli.Flag{force_flag},
-			Usage:       "Run all existing tests of the application",
+			Usage:       "Run all existing tests of the application.",
 			Description: "This runs go test in the current directory. Any arguments following -- will be directly passed to go.",
 			Action:      burrow.Test,
 		},
@@ -110,7 +132,7 @@ func main() {
 			Name:        "build",
 			Aliases:     []string{"b"},
 			Flags:       []cli.Flag{force_flag},
-			Usage:       "Build the application",
+			Usage:       "Build the application.",
 			Description: "This runs go build in the current directory for your application and all examples. Any arguments following -- will be directly passed to go.",
 			Action:      burrow.Build,
 		},
@@ -118,7 +140,7 @@ func main() {
 			Name:        "install",
 			Aliases:     []string{"i", "in", "inst"},
 			Flags:       []cli.Flag{force_flag},
-			Usage:       "Install the application in the GOPATH",
+			Usage:       "Install the application in the GOPATH.",
 			Description: "This runs go install in the current directory.",
 			Action:      burrow.Install,
 		},
@@ -126,7 +148,7 @@ func main() {
 			Name:        "uninstall",
 			Aliases:     []string{"un", "uninst"},
 			Flags:       []cli.Flag{},
-			Usage:       "Uninstall the application from the GOPATH",
+			Usage:       "Uninstall the application from the GOPATH.",
 			Description: "This run go clean -i in the current directory.",
 			Action:      burrow.Uninstall,
 		},
@@ -134,7 +156,7 @@ func main() {
 			Name:        "package",
 			Aliases:     []string{"pack"},
 			Flags:       []cli.Flag{force_flag},
-			Usage:       "Create a .tar.gz containing the binary",
+			Usage:       "Create a .tar.gz containing the binary.",
 			Description: "This runs tar to package your application.",
 			Action:      burrow.Package,
 		},
@@ -142,7 +164,7 @@ func main() {
 			Name:        "publish",
 			Aliases:     []string{"pub"},
 			Flags:       []cli.Flag{},
-			Usage:       "Publish the current version by building a package and setting a version tag in git",
+			Usage:       "Publish the current version by building a package and setting a version tag in git.",
 			Description: "This runs git tag -f vX.Y.Z in the current directory. Any arguments following -- will be directly passed to git.",
 			Action:      burrow.Publish,
 		},
@@ -150,7 +172,7 @@ func main() {
 			Name:        "clean",
 			Aliases:     []string{},
 			Flags:       []cli.Flag{},
-			Usage:       "Clean the project from any build artifacts",
+			Usage:       "Clean the project from any build artifacts.",
 			Description: "This runs go clean in the current directory and removes artifacts created by burrow.",
 			Action:      burrow.Clean,
 		},
@@ -166,7 +188,7 @@ func main() {
 			Name:        "format",
 			Aliases:     []string{"fmt"},
 			Flags:       []cli.Flag{force_flag},
-			Usage:       "Format the code of this project with gofmt",
+			Usage:       "Format the code of this project with gofmt.",
 			Description: "This runs gofmt in the current directory. Any arguments following -- will be directly passed to gofmt.",
 			Action:      burrow.Format,
 		},
@@ -174,7 +196,7 @@ func main() {
 			Name:        "check",
 			Aliases:     []string{},
 			Flags:       []cli.Flag{force_flag},
-			Usage:       "Check the code with go vet",
+			Usage:       "Check the code with go vet.",
 			Description: "This runs go tool vet in the current directory. Any arguments following -- will be directly passed to go.",
 			Action:      burrow.Check,
 		},

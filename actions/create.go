@@ -56,13 +56,16 @@ package
 vendor
 `
 
+// The ProjectType describes whether this is a binary or a library project.
 type ProjectType uint8
 
+// The TYPE_... constants describe the type of a project.
 const (
 	TYPE_BIN ProjectType = iota
 	TYPE_LIB
 )
 
+// Create creates a new burrow project.
 func Create(context *cli.Context) error {
 	if _, err := os.Stat("burrow.yaml"); err == nil {
 		fmt.Println("Already a burrow project!")

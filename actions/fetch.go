@@ -29,6 +29,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Fetch gets all dependencies from the glide lock file for reproducible builds.
 func Fetch(context *cli.Context) error {
 	burrow.LoadConfig()
 

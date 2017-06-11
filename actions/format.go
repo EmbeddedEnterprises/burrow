@@ -27,6 +27,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Format formats the code of the current burrow project with gofmt.
 func Format(context *cli.Context) error {
 	burrow.LoadConfig()
 

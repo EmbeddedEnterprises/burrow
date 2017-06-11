@@ -29,14 +29,19 @@ import (
 	"github.com/fatih/color"
 )
 
+// The LogLevel type describes the log level of a log message.
 type LogLevel int
 
+// The LOG_... constants describe log level of a log message.
 const (
 	LOG_INFO LogLevel = iota
 	LOG_WARN
 	LOG_ERR
 )
 
+// Log writes a log message to stderr which will be colored by the given log level and prefixed
+// with the given target. The format parameter is a fmt.Printf parameter following the args for
+// formatting.
 func Log(level LogLevel, target string, format string, args ...interface{}) {
 	switch level {
 	case LOG_INFO:
@@ -51,11 +56,14 @@ func Log(level LogLevel, target string, format string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, format+"\n", args...)
 }
 
+// The Logger struct holds a logger instance for output redirection.
 type Logger struct {
 	target string
 	level  LogLevel
 }
 
+// NewLogger creates a new logger instance that can be used to redirect streams and produce log
+// message.
 func NewLogger(target string, level LogLevel) Logger {
 	return Logger{
 		target: target,

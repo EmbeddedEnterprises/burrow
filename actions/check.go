@@ -27,6 +27,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Check checks the code of a burrow project with go vet.
 func Check(context *cli.Context) error {
 	burrow.LoadConfig()
 

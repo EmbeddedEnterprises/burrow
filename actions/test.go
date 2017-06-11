@@ -27,6 +27,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Test runs all existing tests of the burrow project.
 func Test(context *cli.Context) error {
 	burrow.LoadConfig()
 

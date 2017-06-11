@@ -26,6 +26,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Uninstall uninstalls the burrow application from the GOPATH.
 func Uninstall(context *cli.Context) error {
 	burrow.LoadConfig()
 	burrow.Log(burrow.LOG_INFO, "uninstall", "Uninstalling application from GOPATH")

@@ -27,6 +27,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Publish builds the application, packages the application and creates a new version tag in git.
 func Publish(context *cli.Context) error {
 	burrow.LoadConfig()
 	if err := Package(context); err != nil {

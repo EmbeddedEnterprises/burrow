@@ -27,6 +27,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Run builds and runs the burrow application.
 func Run(context *cli.Context) error {
 	burrow.LoadConfig()
 

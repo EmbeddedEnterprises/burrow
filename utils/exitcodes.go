@@ -21,8 +21,14 @@
 
 package burrow
 
+// The EXIT_... constants describe the exit codes of burrow.
 const (
+	// Burrow encountered no error, all actions were successful.
 	EXIT_SUCCESS int = iota
+
+	// Burrow encountered an error while reading the burrow.yaml.
 	EXIT_CONFIG
+
+	// Burrow encountered an error while running the specified action.
 	EXIT_ACTION
 )

@@ -22,28 +22,38 @@
 package burrow
 
 import (
+	"os"
+	"path/filepath"
+	"strings"
+
 	"github.com/EmbeddedEnterprises/burrow/utils"
 	"github.com/mattn/go-shellwords"
 	"github.com/urfave/cli"
 )
 
+// Doc hosts the go documentation on the current machine.
 func Doc(context *cli.Context) error {
 	burrow.LoadConfig()
 
-	// TODO: add build artifacts
-	outputs := []string{}
+	burrow.Log(burrow.LOG_INFO, "doc", "Hosting documentation")
 
-	// TODO: godoc is so broken, we have to do hard work here to make it usable...
+	cwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err == nil {
+		gopath := os.Getenv("GOPATH")
+		resolve, err := os.Readlink(cwd)
 
-	if burrow.IsTargetUpToDate("doc", outputs) && !context.Bool("force") {
-		burrow.Log(burrow.LOG_INFO, "doc", "Documentation is up-to-date")
-		return nil
+		if err != nil {
+			resolve = cwd
+		}
+
+		pkg := strings.TrimPrefix(resolve, gopath+"/src/")
+
+		burrow.Log(burrow.LOG_INFO, "doc", "Documentation of the current package is available under:")
+		burrow.Log(burrow.LOG_INFO, "doc", "    http://localhost:6060/pkg/%s", pkg)
 	}
 
-	burrow.Log(burrow.LOG_INFO, "doc", "Building documentation")
-
 	args := []string{}
-	args = append(args, "doc")
+	args = append(args, "-http", ":6060", "-links", "-index")
 	user_args, err := shellwords.Parse(burrow.Config.Args.Go.Doc)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "doc", "Failed to read user arguments from config file: %s", err)
@@ -51,9 +61,5 @@ func Doc(context *cli.Context) error {
 	}
 	args = append(args, user_args...)
 	args = append(args, burrow.GetSecondLevelArgs()...)
-	err = burrow.Exec("doc", "go", args...)
-	if err == nil {
-		burrow.UpdateTarget("doc", outputs)
-	}
-	return err
+	return burrow.Exec("doc", "godoc", args...)
 }

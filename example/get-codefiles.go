@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// The examples package contains showcases of the burrow API.
 package main
 
 import (
@@ -27,6 +28,7 @@ import (
 	"github.com/EmbeddedEnterprises/burrow/utils"
 )
 
+// This example shows how to get all files that contain code for the current burrow project.
 func main() {
 	fmt.Println(burrow.GetCodefiles())
 }

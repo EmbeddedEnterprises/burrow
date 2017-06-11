@@ -29,6 +29,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Update gets all dependencies from the glide yaml file and updates the lock file.
 func Update(context *cli.Context) error {
 	burrow.LoadConfig()
 	burrow.Log(burrow.LOG_INFO, "update", "Updating dependencies from glide yaml config")

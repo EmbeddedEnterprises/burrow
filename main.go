@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This package contains a go build system that used glide for dependency management.
 package main
 
 import (
@@ -28,6 +29,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// The main function is the entry point of burrow. This should only contain cli configuration.
 func main() {
 	force_flag := cli.BoolFlag{
 		Name:  "force, f",
@@ -39,12 +41,11 @@ func main() {
 	}
 
 	// TODO: Add readme
-	// TODO: Add documentation for source code
 
 	app := cli.NewApp()
 	app.Name = "burrow"
 	app.Usage = "build glide managed go programs"
-	app.Version = "0.0.1"
+	app.Version = "0.0.7"
 	app.Action = func(context *cli.Context) error {
 		return cli.ShowAppHelp(context)
 	}
@@ -157,7 +158,7 @@ func main() {
 			Name:        "doc",
 			Aliases:     []string{},
 			Flags:       []cli.Flag{force_flag},
-			Usage:       "Generate the godoc documentation for this project",
+			Usage:       "Host the go documentation on this machine.",
 			Description: "This runs go doc in the current directory. Any arguments following -- will be directly passed to go doc.",
 			Action:      burrow.Doc,
 		},

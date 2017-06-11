@@ -27,6 +27,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Get installs a dependency in the vendor folder and adds it to the glide yaml.
 func Get(context *cli.Context) error {
 	burrow.LoadConfig()
 

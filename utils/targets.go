@@ -38,6 +38,12 @@ import (
 var targetState = map[string]bool{}
 var projectHash string = ""
 
+// IsTargetUpToDate checks whether a given build target is up-to-date. This means that all build
+// artifacts of the target were created from data with the same timestamp as the currently
+// available sources.
+//
+// The outputs parameter specifies which files are created (artifacts) by the target. If these
+// files are not available all cache data is invalid.
 func IsTargetUpToDate(target string, outputs []string) bool {
 	LoadConfig()
 
@@ -85,6 +91,9 @@ func IsTargetUpToDate(target string, outputs []string) bool {
 	return true
 }
 
+// UpdateTarget updates the cache of a target to match the timestamps of all currently available sources.
+// The outputs parameter specifies which files are created (artifacts) by the target. Timestamps of the
+// artifacts will also be stored.
 func UpdateTarget(target string, outputs []string) {
 	cache := GetCodefilesWithMtime(outputs)
 	ser, err := yaml.Marshal(&cache)
@@ -104,6 +113,8 @@ func UpdateTarget(target string, outputs []string) {
 	}
 }
 
+// GetCodefiles returns a string array containing all paths of files that contain code inside the
+// current burrow project.
 func GetCodefiles() []string {
 	code_files := []string{}
 	_ = filepath.Walk(".", func(path string, f os.FileInfo, err error) error {
@@ -115,6 +126,9 @@ func GetCodefiles() []string {
 	return code_files
 }
 
+// GetCodefilesWithMtime returns a map containing all paths of files that contain code inside the
+// current burrow project. The paths get mapped to Unix modification times. The outputs parameter
+// should contain additional non-code files that should also be contained in the map.
 func GetCodefilesWithMtime(outputs []string) map[string]int64 {
 	code_files := map[string]int64{}
 	_ = filepath.Walk(".", func(path string, f os.FileInfo, err error) error {
@@ -136,6 +150,7 @@ func GetCodefilesWithMtime(outputs []string) map[string]int64 {
 	return code_files
 }
 
+// GetSecondLevelArgs returns the command line arguments that are located after a double dash (--).
 func GetSecondLevelArgs() cli.Args {
 	args := os.Args
 	second := cli.Args{}

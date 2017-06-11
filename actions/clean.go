@@ -29,6 +29,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Clean cleans a burrow project from any build artifacts.
 func Clean(context *cli.Context) error {
 	burrow.LoadConfig()
 

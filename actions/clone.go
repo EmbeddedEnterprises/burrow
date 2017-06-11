@@ -30,6 +30,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Clone clones a git repository into the GOPATH and creates a symlink in the cwd.
 func Clone(context *cli.Context) error {
 	options := context.Args()
 

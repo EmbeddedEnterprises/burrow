@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This package contains utilities used for the burrow build system.
 package burrow
 
 import (
@@ -28,6 +29,7 @@ import (
 	"github.com/go-yaml/yaml"
 )
 
+// The Configuration struct describes the layout of the burrow.yaml.
 type Configuration struct {
 	Name        string
 	Version     string
@@ -58,9 +60,16 @@ type Configuration struct {
 	}
 }
 
+// Config is the global instance of the Configuration struct and contains the parsed data of the
+// burrow.yaml.
 var Config Configuration = Configuration{}
+
+// The isConfigLoaded flag describes whether the burrow.yaml has already been parsed into the
+// global Config variable.
 var isConfigLoaded bool = false
 
+// LoadConfig loads the content of the burrow.yaml into the global Config variable and sets the
+// isConfigLoaded flag on success.
 func LoadConfig() {
 	if isConfigLoaded {
 		return

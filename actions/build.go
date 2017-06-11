@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This package contains all actions that can be executed as subcommands.
 package burrow
 
 import (
@@ -31,6 +32,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Build builds a burrow application to bin/.
 func Build(context *cli.Context) error {
 	burrow.LoadConfig()
 

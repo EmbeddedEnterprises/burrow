@@ -29,6 +29,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Package creates a .tar.gz containing the binary.
 func Package(context *cli.Context) error {
 	burrow.LoadConfig()
 	_ = os.Mkdir("./package", 0755)
@@ -39,9 +40,6 @@ func Package(context *cli.Context) error {
 		return err
 	}
 	if err := Test(context); err != nil {
-		return err
-	}
-	if err := Doc(context); err != nil {
 		return err
 	}
 	if err := Build(context); err != nil {

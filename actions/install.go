@@ -27,6 +27,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Install installs the application in the GOPATH.
 func Install(context *cli.Context) error {
 	burrow.LoadConfig()
 	if err := Format(context); err != nil {

@@ -28,6 +28,10 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Exec runs a given command (comm) with arguments (args) and redirects all output of stderr and
+// stdout to a logger with the given target as logging target (tag/name). When the target is ""
+// (empty string) stdout and stderr of the command will be directly mapped to the stdout and
+// stderr of the application.
 func Exec(target string, comm string, args ...string) error {
 	cmd := exec.Command(comm, args...)
 	cmd.Stdin = os.Stdin

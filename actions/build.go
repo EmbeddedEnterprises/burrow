@@ -72,9 +72,10 @@ func Build(context *cli.Context) error {
 
 	for i, output := range outputs {
 		args := []string{}
-		args = append(args, "build", "-o", output, sources[i])
+		args = append(args, "build", "-o", output)
 		args = append(args, user_args...)
 		args = append(args, build_args...)
+		args = append(args, sources[i])
 
 		err = burrow.Exec("build", "go", args...)
 	}

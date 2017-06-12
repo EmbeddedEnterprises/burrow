@@ -14,6 +14,8 @@ The `go tool` makes it really hard to let another developer reproduce your build
 
 ## How to install burrow?
 
+Install `glide` from [here](https://github.com/Masterminds/glide).
+
 ```
 $ go get github.com/EmbeddedEnterprises/burrow
 ```

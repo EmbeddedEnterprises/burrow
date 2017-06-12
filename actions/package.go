@@ -24,6 +24,7 @@ package burrow
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/EmbeddedEnterprises/burrow/utils"
 	"github.com/urfave/cli"
@@ -56,7 +57,13 @@ func Package(context *cli.Context) error {
 	burrow.Log(burrow.LOG_INFO, "package", "Packaging project")
 
 	args := []string{}
-	args = append(args, "czf", outputs[0], "./bin/"+burrow.Config.Name)
+	args = append(args, "czf", outputs[0])
+	_ = filepath.Walk("./bin", func(path string, f os.FileInfo, err error) error {
+		if !f.IsDir() {
+			args = append(args, path)
+		}
+		return nil
+	})
 	args = append(args, burrow.Config.Package.Include...)
 
 	err := burrow.Exec("package", "tar", args...)

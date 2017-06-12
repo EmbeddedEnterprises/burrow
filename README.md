@@ -12,6 +12,12 @@ So this is the next go build tool that makes the whole ecosystem even more compl
 
 The `go tool` makes it really hard to let another developer reproduce your build. Glide helps but does not solve the problem of additional build parameters. A Makefile can be a solution for this but Makefiles are not that easy to update in a centralized manner. Also, the `go tool` does not model a development workflow for a project that integrates in the concept of reproducible builds. Burrow tries to solve this by providing a `publish` and a `package` command and using glide for dependency management.
 
+## How to install burrow?
+
+```
+$ go get github.com/EmbeddedEnterprises/burrow
+```
+
 ## How to create a project?
 
 To create a burrow project just create an empty folder and run

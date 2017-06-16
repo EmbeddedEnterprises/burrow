@@ -28,7 +28,7 @@ import (
 )
 
 // Publish builds the application, packages the application and creates a new version tag in git.
-func Publish(context *cli.Context) error {
+func Publish(context *cli.Context, use_second_level_args bool) error {
 	burrow.LoadConfig()
 	if err := Package(context); err != nil {
 		return err
@@ -49,7 +49,11 @@ func Publish(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
-	args = append(args, burrow.GetSecondLevelArgs()...)
+
+	if use_second_level_args {
+		args = append(args, burrow.GetSecondLevelArgs()...)
+	}
+
 	args = append(args, "v"+burrow.Config.Version)
 	return burrow.Exec("publish", "git", args...)
 }

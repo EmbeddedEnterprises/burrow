@@ -30,16 +30,16 @@ import (
 // Install installs the application in the GOPATH.
 func Install(context *cli.Context) error {
 	burrow.LoadConfig()
-	if err := Format(context); err != nil {
+	if err := Format(context, false); err != nil {
 		return err
 	}
-	if err := Check(context); err != nil {
+	if err := Check(context, false); err != nil {
 		return err
 	}
-	if err := Test(context); err != nil {
+	if err := Test(context, false); err != nil {
 		return err
 	}
-	if err := Build(context); err != nil {
+	if err := Build(context, true); err != nil {
 		return err
 	}
 

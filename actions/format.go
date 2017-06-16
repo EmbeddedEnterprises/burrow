@@ -28,7 +28,7 @@ import (
 )
 
 // Format formats the code of the current burrow project with gofmt.
-func Format(context *cli.Context) error {
+func Format(context *cli.Context, use_second_level_args bool) error {
 	burrow.LoadConfig()
 
 	outputs := []string{}
@@ -48,7 +48,11 @@ func Format(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
-	args = append(args, burrow.GetSecondLevelArgs()...)
+
+	if use_second_level_args {
+		args = append(args, burrow.GetSecondLevelArgs()...)
+	}
+
 	args = append(args, burrow.GetCodefiles()...)
 	err = burrow.Exec("format", "gofmt", args...)
 	if err == nil {

@@ -28,7 +28,7 @@ import (
 )
 
 // Check checks the code of a burrow project with go vet.
-func Check(context *cli.Context) error {
+func Check(context *cli.Context, use_second_level_args bool) error {
 	burrow.LoadConfig()
 
 	outputs := []string{}
@@ -48,7 +48,11 @@ func Check(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
-	args = append(args, burrow.GetSecondLevelArgs()...)
+
+	if use_second_level_args {
+		args = append(args, burrow.GetSecondLevelArgs()...)
+	}
+
 	args = append(args, burrow.GetCodefiles()...)
 	err = burrow.Exec("check", "go", args...)
 	if err == nil {

@@ -28,7 +28,7 @@ import (
 )
 
 // Test runs all existing tests of the burrow project.
-func Test(context *cli.Context) error {
+func Test(context *cli.Context, use_second_level_args bool) error {
 	burrow.LoadConfig()
 
 	outputs := []string{}
@@ -48,7 +48,11 @@ func Test(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
-	args = append(args, burrow.GetSecondLevelArgs()...)
+
+	if use_second_level_args {
+		args = append(args, burrow.GetSecondLevelArgs()...)
+	}
+
 	err = burrow.Exec("test", "go", args...)
 	if err == nil {
 		burrow.UpdateTarget("test", outputs)

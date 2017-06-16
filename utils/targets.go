@@ -166,3 +166,9 @@ func GetSecondLevelArgs() cli.Args {
 
 	return second
 }
+
+func WrapAction(action func(*cli.Context, bool) error) func(*cli.Context) error {
+	return func(c *cli.Context) error {
+		return action(c, true)
+	}
+}

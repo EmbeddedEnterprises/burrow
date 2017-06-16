@@ -33,7 +33,7 @@ import (
 )
 
 // Build builds a burrow application to bin/.
-func Build(context *cli.Context) error {
+func Build(context *cli.Context, use_second_level_args bool) error {
 	burrow.LoadConfig()
 
 	outputs := []string{}
@@ -74,7 +74,11 @@ func Build(context *cli.Context) error {
 		args := []string{}
 		args = append(args, "build", "-o", output)
 		args = append(args, user_args...)
-		args = append(args, build_args...)
+
+		if use_second_level_args {
+			args = append(args, build_args...)
+		}
+
 		args = append(args, sources[i])
 
 		err = burrow.Exec("build", "go", args...)

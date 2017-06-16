@@ -30,7 +30,7 @@ import (
 )
 
 // Fetch gets all dependencies from the glide lock file for reproducible builds.
-func Fetch(context *cli.Context) error {
+func Fetch(context *cli.Context, use_second_level_args bool) error {
 	burrow.LoadConfig()
 
 	burrow.Log(burrow.LOG_INFO, "fetch", "Fetching dependencies from lock file")
@@ -43,6 +43,10 @@ func Fetch(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
-	args = append(args, burrow.GetSecondLevelArgs()...)
+
+	if use_second_level_args {
+		args = append(args, burrow.GetSecondLevelArgs()...)
+	}
+
 	return burrow.Exec("fetch", gopath+"/bin/glide", args...)
 }

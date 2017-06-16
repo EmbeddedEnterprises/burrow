@@ -28,10 +28,10 @@ import (
 )
 
 // Run builds and runs the burrow application.
-func Run(context *cli.Context) error {
+func Run(context *cli.Context, use_second_level_args bool) error {
 	burrow.LoadConfig()
 
-	if err := Build(context); err != nil {
+	if err := Build(context, false); err != nil {
 		return err
 	}
 
@@ -45,7 +45,10 @@ func Run(context *cli.Context) error {
 
 	args := []string{}
 	args = append(args, user_args...)
-	args = append(args, burrow.GetSecondLevelArgs()...)
+
+	if use_second_level_args {
+		args = append(args, burrow.GetSecondLevelArgs()...)
+	}
 
 	if example == "" {
 		burrow.Log(burrow.LOG_INFO, "run", "Running project")

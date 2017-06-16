@@ -25,7 +25,8 @@ package main
 import (
 	"os"
 
-	"github.com/EmbeddedEnterprises/burrow/actions"
+	actions "github.com/EmbeddedEnterprises/burrow/actions"
+	utils "github.com/EmbeddedEnterprises/burrow/utils"
 	"github.com/urfave/cli"
 )
 
@@ -60,7 +61,7 @@ Authors:
 	app := cli.NewApp()
 	app.Name = "burrow"
 	app.Usage = "A go build system that uses glide for dependency management."
-	app.Version = "0.0.11"
+	app.Version = "0.0.12"
 	app.Authors = []cli.Author{
 		cli.Author{
 			Name:  "Fin Christensen",
@@ -78,7 +79,7 @@ Authors:
 			Flags:       []cli.Flag{},
 			Usage:       "Create a new burrow project.",
 			Description: "This action creates a new burrow project in the current directory.",
-			Action:      burrow.Create,
+			Action:      actions.Create,
 		},
 		{
 			Name:        "clone",
@@ -86,7 +87,7 @@ Authors:
 			Flags:       []cli.Flag{},
 			Usage:       "Clone a git repository into your GOPATH and create a symbolic link in your current location.",
 			Description: "This action clones a git repository (go-get url scheme) into your GOPATH and creates a symbolic link in the current directory.",
-			Action:      burrow.Clone,
+			Action:      actions.Clone,
 		},
 		{
 			Name:        "get",
@@ -94,7 +95,7 @@ Authors:
 			Flags:       []cli.Flag{},
 			Usage:       "Install a dependency in the vendor folder and add it to the glide yaml.",
 			Description: "This runs glide get in the current directory. The first argument should be the go-get url and any argument following -- get passed directly to glide.",
-			Action:      burrow.Get,
+			Action:      utils.WrapAction(actions.Get),
 		},
 		{
 			Name:        "fetch",
@@ -102,7 +103,7 @@ Authors:
 			Flags:       []cli.Flag{},
 			Usage:       "Get all dependencies from the lock file to reproduce a build.",
 			Description: "This runs glide install in the current directory. Any arguments following -- get passed directly to glide.",
-			Action:      burrow.Fetch,
+			Action:      utils.WrapAction(actions.Fetch),
 		},
 		{
 			Name:        "update",
@@ -110,7 +111,7 @@ Authors:
 			Flags:       []cli.Flag{},
 			Usage:       "Update all dependencies from the yaml file and update the lock file.",
 			Description: "This runs glide update in the current directory. Any arguments following -- get passed directly to gilde.",
-			Action:      burrow.Update,
+			Action:      utils.WrapAction(actions.Update),
 		},
 		{
 			Name:        "run",
@@ -118,7 +119,7 @@ Authors:
 			Flags:       []cli.Flag{example_flag},
 			Usage:       "Build and run the application.",
 			Description: "This runs the compiled binary. Any arguments following -- will be directly passed to your application.",
-			Action:      burrow.Run,
+			Action:      utils.WrapAction(actions.Run),
 		},
 		{
 			Name:        "test",
@@ -126,7 +127,7 @@ Authors:
 			Flags:       []cli.Flag{force_flag},
 			Usage:       "Run all existing tests of the application.",
 			Description: "This runs go test in the current directory. Any arguments following -- will be directly passed to go.",
-			Action:      burrow.Test,
+			Action:      utils.WrapAction(actions.Test),
 		},
 		{
 			Name:        "build",
@@ -134,7 +135,7 @@ Authors:
 			Flags:       []cli.Flag{force_flag},
 			Usage:       "Build the application.",
 			Description: "This runs go build in the current directory for your application and all examples. Any arguments following -- will be directly passed to go.",
-			Action:      burrow.Build,
+			Action:      utils.WrapAction(actions.Build),
 		},
 		{
 			Name:        "install",
@@ -142,7 +143,7 @@ Authors:
 			Flags:       []cli.Flag{force_flag},
 			Usage:       "Install the application in the GOPATH.",
 			Description: "This runs go install in the current directory.",
-			Action:      burrow.Install,
+			Action:      actions.Install,
 		},
 		{
 			Name:        "uninstall",
@@ -150,7 +151,7 @@ Authors:
 			Flags:       []cli.Flag{},
 			Usage:       "Uninstall the application from the GOPATH.",
 			Description: "This run go clean -i in the current directory.",
-			Action:      burrow.Uninstall,
+			Action:      actions.Uninstall,
 		},
 		{
 			Name:        "package",
@@ -158,7 +159,7 @@ Authors:
 			Flags:       []cli.Flag{force_flag},
 			Usage:       "Create a .tar.gz containing the binary.",
 			Description: "This runs tar to package your application.",
-			Action:      burrow.Package,
+			Action:      actions.Package,
 		},
 		{
 			Name:        "publish",
@@ -166,7 +167,7 @@ Authors:
 			Flags:       []cli.Flag{},
 			Usage:       "Publish the current version by building a package and setting a version tag in git.",
 			Description: "This runs git tag -f vX.Y.Z in the current directory. Any arguments following -- will be directly passed to git.",
-			Action:      burrow.Publish,
+			Action:      utils.WrapAction(actions.Publish),
 		},
 		{
 			Name:        "clean",
@@ -174,7 +175,7 @@ Authors:
 			Flags:       []cli.Flag{},
 			Usage:       "Clean the project from any build artifacts.",
 			Description: "This runs go clean in the current directory and removes artifacts created by burrow.",
-			Action:      burrow.Clean,
+			Action:      actions.Clean,
 		},
 		{
 			Name:        "doc",
@@ -182,7 +183,7 @@ Authors:
 			Flags:       []cli.Flag{force_flag},
 			Usage:       "Host the go documentation on this machine.",
 			Description: "This runs go doc in the current directory. Any arguments following -- will be directly passed to go doc.",
-			Action:      burrow.Doc,
+			Action:      utils.WrapAction(actions.Doc),
 		},
 		{
 			Name:        "format",
@@ -190,7 +191,7 @@ Authors:
 			Flags:       []cli.Flag{force_flag},
 			Usage:       "Format the code of this project with gofmt.",
 			Description: "This runs gofmt in the current directory. Any arguments following -- will be directly passed to gofmt.",
-			Action:      burrow.Format,
+			Action:      utils.WrapAction(actions.Format),
 		},
 		{
 			Name:        "check",
@@ -198,7 +199,7 @@ Authors:
 			Flags:       []cli.Flag{force_flag},
 			Usage:       "Check the code with go vet.",
 			Description: "This runs go tool vet in the current directory. Any arguments following -- will be directly passed to go.",
-			Action:      burrow.Check,
+			Action:      utils.WrapAction(actions.Check),
 		},
 	}
 

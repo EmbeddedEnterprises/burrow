@@ -28,7 +28,7 @@ import (
 )
 
 // Get installs a dependency in the vendor folder and adds it to the glide yaml.
-func Get(context *cli.Context) error {
+func Get(context *cli.Context, use_second_level_args bool) error {
 	burrow.LoadConfig()
 
 	if len(context.Args()) != 1 {
@@ -47,7 +47,11 @@ func Get(context *cli.Context) error {
 		return nil
 	}
 	args = append(args, user_args...)
-	args = append(args, burrow.GetSecondLevelArgs()...)
+
+	if use_second_level_args {
+		args = append(args, burrow.GetSecondLevelArgs()...)
+	}
+
 	args = append(args, dep)
 
 	return burrow.Exec("get", "glide", args...)

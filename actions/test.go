@@ -28,7 +28,7 @@ import (
 )
 
 // Test runs all existing tests of the burrow project.
-func Test(context *cli.Context, use_second_level_args bool) error {
+func Test(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
 
 	outputs := []string{}
@@ -42,14 +42,14 @@ func Test(context *cli.Context, use_second_level_args bool) error {
 
 	args := []string{}
 	args = append(args, "test")
-	user_args, err := shellwords.Parse(burrow.Config.Args.Go.Test)
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Test)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "test", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
-	args = append(args, user_args...)
+	args = append(args, userArgs...)
 
-	if use_second_level_args {
+	if useSecondLevelArgs {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
 

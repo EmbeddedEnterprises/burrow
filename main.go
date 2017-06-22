@@ -32,11 +32,11 @@ import (
 
 // The main function is the entry point of burrow. This should only contain cli configuration.
 func main() {
-	force_flag := cli.BoolFlag{
+	forceFlag := cli.BoolFlag{
 		Name:  "force, f",
 		Usage: "Forces this action to be run, even if cached data is available",
 	}
-	example_flag := cli.StringFlag{
+	exampleFlag := cli.StringFlag{
 		Name:  "example, e",
 		Usage: "Run an example (specified by name) instead of the application itself",
 	}
@@ -63,7 +63,7 @@ Authors:
 	app.Usage = "A go build system that uses glide for dependency management."
 	app.Version = "0.0.12"
 	app.Authors = []cli.Author{
-		cli.Author{
+		{
 			Name:  "Fin Christensen",
 			Email: "christensen.fin@gmail.com",
 		},
@@ -116,7 +116,7 @@ Authors:
 		{
 			Name:        "run",
 			Aliases:     []string{"r"},
-			Flags:       []cli.Flag{example_flag},
+			Flags:       []cli.Flag{exampleFlag},
 			Usage:       "Build and run the application.",
 			Description: "This runs the compiled binary. Any arguments following -- will be directly passed to your application.",
 			Action:      utils.WrapAction(actions.Run),
@@ -124,7 +124,7 @@ Authors:
 		{
 			Name:        "test",
 			Aliases:     []string{"t"},
-			Flags:       []cli.Flag{force_flag},
+			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Run all existing tests of the application.",
 			Description: "This runs go test in the current directory. Any arguments following -- will be directly passed to go.",
 			Action:      utils.WrapAction(actions.Test),
@@ -132,7 +132,7 @@ Authors:
 		{
 			Name:        "build",
 			Aliases:     []string{"b"},
-			Flags:       []cli.Flag{force_flag},
+			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Build the application.",
 			Description: "This runs go build in the current directory for your application and all examples. Any arguments following -- will be directly passed to go.",
 			Action:      utils.WrapAction(actions.Build),
@@ -140,7 +140,7 @@ Authors:
 		{
 			Name:        "install",
 			Aliases:     []string{"i", "in", "inst"},
-			Flags:       []cli.Flag{force_flag},
+			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Install the application in the GOPATH.",
 			Description: "This runs go install in the current directory.",
 			Action:      actions.Install,
@@ -156,7 +156,7 @@ Authors:
 		{
 			Name:        "package",
 			Aliases:     []string{"pack"},
-			Flags:       []cli.Flag{force_flag},
+			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Create a .tar.gz containing the binary.",
 			Description: "This runs tar to package your application.",
 			Action:      actions.Package,
@@ -180,7 +180,7 @@ Authors:
 		{
 			Name:        "doc",
 			Aliases:     []string{},
-			Flags:       []cli.Flag{force_flag},
+			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Host the go documentation on this machine.",
 			Description: "This runs go doc in the current directory. Any arguments following -- will be directly passed to go doc.",
 			Action:      utils.WrapAction(actions.Doc),
@@ -188,7 +188,7 @@ Authors:
 		{
 			Name:        "format",
 			Aliases:     []string{"fmt"},
-			Flags:       []cli.Flag{force_flag},
+			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Format the code of this project with gofmt.",
 			Description: "This runs gofmt in the current directory. Any arguments following -- will be directly passed to gofmt.",
 			Action:      utils.WrapAction(actions.Format),
@@ -196,7 +196,7 @@ Authors:
 		{
 			Name:        "check",
 			Aliases:     []string{},
-			Flags:       []cli.Flag{force_flag},
+			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Check the code with go vet.",
 			Description: "This runs go tool vet in the current directory. Any arguments following -- will be directly passed to go.",
 			Action:      utils.WrapAction(actions.Check),

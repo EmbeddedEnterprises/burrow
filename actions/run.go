@@ -28,7 +28,7 @@ import (
 )
 
 // Run builds and runs the burrow application.
-func Run(context *cli.Context, use_second_level_args bool) error {
+func Run(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
 
 	if err := Build(context, false); err != nil {
@@ -37,24 +37,24 @@ func Run(context *cli.Context, use_second_level_args bool) error {
 
 	example := context.String("example")
 
-	user_args, err := shellwords.Parse(burrow.Config.Args.Run)
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Run)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "run", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
 
 	args := []string{}
-	args = append(args, user_args...)
+	args = append(args, userArgs...)
 
-	if use_second_level_args {
+	if useSecondLevelArgs {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
 
 	if example == "" {
 		burrow.Log(burrow.LOG_INFO, "run", "Running project")
 		return burrow.Exec("", "./bin/"+burrow.Config.Name, args...)
-	} else {
-		burrow.Log(burrow.LOG_INFO, "run", "Running example %s", example)
-		return burrow.Exec("", "./bin/example/"+example, args...)
 	}
+
+	burrow.Log(burrow.LOG_INFO, "run", "Running example %s", example)
+	return burrow.Exec("", "./bin/example/"+example, args...)
 }

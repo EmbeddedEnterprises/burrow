@@ -28,7 +28,7 @@ import (
 )
 
 // Publish builds the application, packages the application and creates a new version tag in git.
-func Publish(context *cli.Context, use_second_level_args bool) error {
+func Publish(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
 	if err := Package(context); err != nil {
 		return err
@@ -43,14 +43,14 @@ func Publish(context *cli.Context, use_second_level_args bool) error {
 
 	args := []string{}
 	args = append(args, "tag", "-f")
-	user_args, err := shellwords.Parse(burrow.Config.Args.Git.Tag)
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Git.Tag)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "publish", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
-	args = append(args, user_args...)
+	args = append(args, userArgs...)
 
-	if use_second_level_args {
+	if useSecondLevelArgs {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
 

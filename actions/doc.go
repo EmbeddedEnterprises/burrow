@@ -32,7 +32,7 @@ import (
 )
 
 // Doc hosts the go documentation on the current machine.
-func Doc(context *cli.Context, use_second_level_args bool) error {
+func Doc(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
 
 	burrow.Log(burrow.LOG_INFO, "doc", "Hosting documentation")
@@ -54,14 +54,14 @@ func Doc(context *cli.Context, use_second_level_args bool) error {
 
 	args := []string{}
 	args = append(args, "-http", ":6060", "-links", "-index")
-	user_args, err := shellwords.Parse(burrow.Config.Args.Go.Doc)
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Doc)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "doc", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
-	args = append(args, user_args...)
+	args = append(args, userArgs...)
 
-	if use_second_level_args {
+	if useSecondLevelArgs {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
 

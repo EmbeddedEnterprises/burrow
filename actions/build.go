@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// This package contains all actions that can be executed as subcommands.
+// Package burrow contains all actions that can be executed as subcommands.
 package burrow
 
 import (
@@ -33,7 +33,7 @@ import (
 )
 
 // Build builds a burrow application to bin/.
-func Build(context *cli.Context, use_second_level_args bool) error {
+func Build(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
 
 	outputs := []string{}
@@ -63,20 +63,20 @@ func Build(context *cli.Context, use_second_level_args bool) error {
 
 	_ = os.Mkdir("./bin", 0755)
 
-	user_args, err := shellwords.Parse(burrow.Config.Args.Go.Build)
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Build)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "build", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
-	build_args := burrow.GetSecondLevelArgs()
+	buildArgs := burrow.GetSecondLevelArgs()
 
 	for i, output := range outputs {
 		args := []string{}
 		args = append(args, "build", "-o", output)
-		args = append(args, user_args...)
+		args = append(args, userArgs...)
 
-		if use_second_level_args {
-			args = append(args, build_args...)
+		if useSecondLevelArgs {
+			args = append(args, buildArgs...)
 		}
 
 		args = append(args, sources[i])

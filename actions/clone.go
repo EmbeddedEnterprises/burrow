@@ -58,12 +58,12 @@ func Clone(context *cli.Context) error {
 
 	args := []string{}
 	args = append(args, "clone", url, destination)
-	user_args, err := shellwords.Parse(burrow.Config.Args.Git.Clone)
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Git.Clone)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "clone", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
-	args = append(args, user_args...)
+	args = append(args, userArgs...)
 	if err := burrow.Exec("clone", "git", args...); err != nil {
 		return nil
 	}

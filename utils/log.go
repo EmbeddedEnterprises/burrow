@@ -71,12 +71,12 @@ func NewLogger(target string, level LogLevel) Logger {
 	}
 }
 
-func (self Logger) Write(payload []byte) (int, error) {
+func (log Logger) Write(payload []byte) (int, error) {
 	message := string(payload[:])
 	lines := strings.Split(message, "\n")
 	for _, line := range lines {
 		if line != "" {
-			Log(self.level, self.target, line)
+			Log(log.level, log.target, line)
 		}
 	}
 	return len(payload), nil

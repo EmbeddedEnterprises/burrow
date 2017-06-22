@@ -73,23 +73,23 @@ func Create(context *cli.Context) error {
 	}
 
 	var err error
-	project_type := TYPE_BIN
-	project_name := "project"
-	project_license := "MIT"
-	project_description := "Burrow project"
-	project_authors := []string{}
+	projectType := TYPE_BIN
+	projectName := "project"
+	projectLicense := "MIT"
+	projectDescription := "Burrow project"
+	projectAuthors := []string{}
 
 	for {
 		fmt.Print("Is your project a binary (bin) or a library (lib)? ")
 		reader := bufio.NewReader(os.Stdin)
-		project_type_str, err := reader.ReadString('\n')
-		project_type_str = project_type_str[:len(project_type_str)-1]
+		projectTypeStr, err := reader.ReadString('\n')
+		projectTypeStr = projectTypeStr[:len(projectTypeStr)-1]
 		if err == nil {
-			if project_type_str == "bin" {
-				project_type = TYPE_BIN
+			if projectTypeStr == "bin" {
+				projectType = TYPE_BIN
 				break
-			} else if project_type_str == "lib" {
-				project_type = TYPE_LIB
+			} else if projectTypeStr == "lib" {
+				projectType = TYPE_LIB
 				break
 			}
 		}
@@ -98,9 +98,9 @@ func Create(context *cli.Context) error {
 	for {
 		fmt.Print("What is the name of your project? ")
 		reader := bufio.NewReader(os.Stdin)
-		project_name, err = reader.ReadString('\n')
-		project_name = project_name[:len(project_name)-1]
-		if err == nil && project_name != "" {
+		projectName, err = reader.ReadString('\n')
+		projectName = projectName[:len(projectName)-1]
+		if err == nil && projectName != "" {
 			break
 		}
 	}
@@ -108,14 +108,14 @@ func Create(context *cli.Context) error {
 	for {
 		fmt.Print("Which license (SPDX License or none) should your project use? ")
 		reader := bufio.NewReader(os.Stdin)
-		project_license, err = reader.ReadString('\n')
-		project_license = project_license[:len(project_license)-1]
+		projectLicense, err = reader.ReadString('\n')
+		projectLicense = projectLicense[:len(projectLicense)-1]
 
-		if project_license == "none" {
+		if projectLicense == "none" {
 			break
-		} else if err == nil && project_license != "" {
+		} else if err == nil && projectLicense != "" {
 			resp, err := http.Get(
-				"https://raw.githubusercontent.com/spdx/license-list-data/master/text/" + project_license + ".txt",
+				"https://raw.githubusercontent.com/spdx/license-list-data/master/text/" + projectLicense + ".txt",
 			)
 			if err != nil {
 				continue
@@ -143,9 +143,9 @@ func Create(context *cli.Context) error {
 	for {
 		fmt.Println("Please enter a description of your project:")
 		reader := bufio.NewReader(os.Stdin)
-		project_description, err = reader.ReadString('\n')
-		project_description = project_description[:len(project_description)-1]
-		if err == nil && project_description != "" {
+		projectDescription, err = reader.ReadString('\n')
+		projectDescription = projectDescription[:len(projectDescription)-1]
+		if err == nil && projectDescription != "" {
 			break
 		}
 	}
@@ -156,17 +156,17 @@ func Create(context *cli.Context) error {
 		project_authors_str, err := reader.ReadString('\n')
 		project_authors_str = project_authors_str[:len(project_authors_str)-1]
 		if err == nil && project_authors_str != "" {
-			project_authors = strings.Split(project_authors_str, ",")
+			projectAuthors = strings.Split(project_authors_str, ",")
 			break
 		}
 	}
 
 	config := burrow.Configuration{}
-	config.Name = project_name
+	config.Name = projectName
 	config.Version = "0.1.0"
-	config.Description = project_description
-	config.Authors = project_authors
-	config.License = project_license
+	config.Description = projectDescription
+	config.Authors = projectAuthors
+	config.License = projectLicense
 	config.Package.Include = []string{}
 	config.Args.Run = ""
 	config.Args.Go.Test = ""
@@ -183,14 +183,14 @@ func Create(context *cli.Context) error {
 
 	_ = os.Mkdir("example", 0755)
 	_ = ioutil.WriteFile("burrow.yaml", []byte(ser), 0644)
-	_ = ioutil.WriteFile("README.md", []byte(fmt.Sprintf(readme, project_name, project_description)), 0644)
+	_ = ioutil.WriteFile("README.md", []byte(fmt.Sprintf(readme, projectName, projectDescription)), 0644)
 	_ = ioutil.WriteFile(".gitignore", []byte(gitignore), 0644)
 
-	switch project_type {
+	switch projectType {
 	case TYPE_BIN:
 		_ = ioutil.WriteFile("main.go", []byte(main), 0644)
 	case TYPE_LIB:
-		_ = ioutil.WriteFile("lib.go", []byte(fmt.Sprintf(lib, project_name)), 0644)
+		_ = ioutil.WriteFile("lib.go", []byte(fmt.Sprintf(lib, projectName)), 0644)
 	}
 
 	burrow.Exec("", "glide", "init")

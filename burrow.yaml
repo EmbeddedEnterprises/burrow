@@ -13,7 +13,7 @@ args:
     build:
     doc:
     vet:
-    fmt:
+    fmt: -s
   glide:
     install:
     update:

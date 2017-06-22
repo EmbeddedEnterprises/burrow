@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// This package contains utilities used for the burrow build system.
+// Package burrow contains utilities used for the burrow build system.
 package burrow
 
 import (

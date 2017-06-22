@@ -53,11 +53,11 @@ func IsTargetUpToDate(target string, outputs []string) bool {
 	}
 
 	if projectHash == "" {
-		project_dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-		hash_source := Config.Name + "_" + project_dir
-		sha1_hasher := sha1.New()
-		sha1_hasher.Write([]byte(hash_source))
-		projectHash = base64.URLEncoding.EncodeToString(sha1_hasher.Sum(nil))
+		projectDir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+		hashSource := Config.Name + "_" + projectDir
+		sha1Hasher := sha1.New()
+		sha1Hasher.Write([]byte(hashSource))
+		projectHash = base64.URLEncoding.EncodeToString(sha1Hasher.Sum(nil))
 	}
 
 	usr, _ := user.Current()
@@ -70,17 +70,17 @@ func IsTargetUpToDate(target string, outputs []string) bool {
 		return false
 	}
 
-	code_files := GetCodefilesWithMtime(outputs)
+	codeFiles := GetCodefilesWithMtime(outputs)
 
-	cached_code_files := map[string]int64{}
-	err = yaml.Unmarshal(cache, &cached_code_files)
+	cachedCodeFiles := map[string]int64{}
+	err = yaml.Unmarshal(cache, &cachedCodeFiles)
 	if err != nil {
 		targetState[target] = false
 		return false
 	}
 
-	for path, mtime := range code_files {
-		cached_mtime, ok := cached_code_files[path]
+	for path, mtime := range codeFiles {
+		cached_mtime, ok := cachedCodeFiles[path]
 		if !ok || cached_mtime < mtime {
 			targetState[target] = false
 			return false
@@ -116,24 +116,24 @@ func UpdateTarget(target string, outputs []string) {
 // GetCodefiles returns a string array containing all paths of files that contain code inside the
 // current burrow project.
 func GetCodefiles() []string {
-	code_files := []string{}
+	codeFiles := []string{}
 	_ = filepath.Walk(".", func(path string, f os.FileInfo, err error) error {
 		if strings.HasSuffix(path, ".go") && !strings.Contains(path, "vendor/") {
-			code_files = append(code_files, path)
+			codeFiles = append(codeFiles, path)
 		}
 		return nil
 	})
-	return code_files
+	return codeFiles
 }
 
 // GetCodefilesWithMtime returns a map containing all paths of files that contain code inside the
 // current burrow project. The paths get mapped to Unix modification times. The outputs parameter
 // should contain additional non-code files that should also be contained in the map.
 func GetCodefilesWithMtime(outputs []string) map[string]int64 {
-	code_files := map[string]int64{}
+	codeFiles := map[string]int64{}
 	_ = filepath.Walk(".", func(path string, f os.FileInfo, err error) error {
 		if strings.HasSuffix(path, ".go") || strings.HasSuffix(path, ".yaml") {
-			code_files[path] = f.ModTime().Unix()
+			codeFiles[path] = f.ModTime().Unix()
 		}
 		return nil
 	})
@@ -141,13 +141,13 @@ func GetCodefilesWithMtime(outputs []string) map[string]int64 {
 	for _, output := range outputs {
 		info, err := os.Stat(output)
 		if err != nil {
-			code_files[output] = math.MaxInt64
+			codeFiles[output] = math.MaxInt64
 		} else {
-			code_files[output] = info.ModTime().Unix()
+			codeFiles[output] = info.ModTime().Unix()
 		}
 	}
 
-	return code_files
+	return codeFiles
 }
 
 // GetSecondLevelArgs returns the command line arguments that are located after a double dash (--).
@@ -155,11 +155,11 @@ func GetSecondLevelArgs() cli.Args {
 	args := os.Args
 	second := cli.Args{}
 
-	double_dash_found := false
+	doubleDashFound := false
 	for _, val := range args {
 		if val == "--" {
-			double_dash_found = true
-		} else if double_dash_found {
+			doubleDashFound = true
+		} else if doubleDashFound {
 			second = append(second, val)
 		}
 	}
@@ -167,6 +167,7 @@ func GetSecondLevelArgs() cli.Args {
 	return second
 }
 
+// WrapAction sets the useSecondLevelArgs of an action to true by default.
 func WrapAction(action func(*cli.Context, bool) error) func(*cli.Context) error {
 	return func(c *cli.Context) error {
 		return action(c, true)

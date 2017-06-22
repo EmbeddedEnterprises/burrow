@@ -30,20 +30,20 @@ import (
 )
 
 // Update gets all dependencies from the glide yaml file and updates the lock file.
-func Update(context *cli.Context, use_second_level_args bool) error {
+func Update(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
 	burrow.Log(burrow.LOG_INFO, "update", "Updating dependencies from glide yaml config")
 	gopath := os.Getenv("GOPATH")
 	args := []string{}
 	args = append(args, "update")
-	user_args, err := shellwords.Parse(burrow.Config.Args.Glide.Update)
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Glide.Update)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "update", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
-	args = append(args, user_args...)
+	args = append(args, userArgs...)
 
-	if use_second_level_args {
+	if useSecondLevelArgs {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
 

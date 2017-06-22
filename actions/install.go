@@ -53,12 +53,12 @@ func Install(context *cli.Context) error {
 
 	args := []string{}
 	args = append(args, "install")
-	user_args, err := shellwords.Parse(burrow.Config.Args.Go.Build)
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Build)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "install", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
-	args = append(args, user_args...)
+	args = append(args, userArgs...)
 	err = burrow.Exec("install", "go", args...)
 	if err == nil {
 		burrow.UpdateTarget("install", outputs)

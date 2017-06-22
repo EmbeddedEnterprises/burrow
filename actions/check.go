@@ -28,7 +28,7 @@ import (
 )
 
 // Check checks the code of a burrow project with go vet.
-func Check(context *cli.Context, use_second_level_args bool) error {
+func Check(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
 
 	outputs := []string{}
@@ -42,14 +42,14 @@ func Check(context *cli.Context, use_second_level_args bool) error {
 
 	args := []string{}
 	args = append(args, "tool", "vet")
-	user_args, err := shellwords.Parse(burrow.Config.Args.Go.Vet)
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Vet)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "check", "Failed to read user arguments from config file: %s", err)
 		return nil
 	}
-	args = append(args, user_args...)
+	args = append(args, userArgs...)
 
-	if use_second_level_args {
+	if useSecondLevelArgs {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
 

@@ -22,7 +22,7 @@ $ go get github.com/EmbeddedEnterprises/burrow
 
 ## How to create a project?
 
-To create a burrow project just create an empty folder and run
+To create a burrow project just create an empty folder inside your `GOPATH` and run
 
 ```
 $ burrow init

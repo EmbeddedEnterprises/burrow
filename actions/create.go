@@ -65,20 +65,7 @@ const (
 	TYPE_LIB
 )
 
-// Create creates a new burrow project.
-func Create(context *cli.Context) error {
-	if _, err := os.Stat("burrow.yaml"); err == nil {
-		fmt.Println("Already a burrow project!")
-		return cli.NewExitError("", burrow.EXIT_ACTION)
-	}
-
-	var err error
-	projectType := TYPE_BIN
-	projectName := "project"
-	projectLicense := "MIT"
-	projectDescription := "Burrow project"
-	projectAuthors := []string{}
-
+func askProjectType() ProjectType {
 	for {
 		fmt.Print("Is your project a binary (bin) or a library (lib)? ")
 		reader := bufio.NewReader(os.Stdin)
@@ -86,29 +73,32 @@ func Create(context *cli.Context) error {
 		projectTypeStr = projectTypeStr[:len(projectTypeStr)-1]
 		if err == nil {
 			if projectTypeStr == "bin" {
-				projectType = TYPE_BIN
-				break
+				return TYPE_BIN
 			} else if projectTypeStr == "lib" {
-				projectType = TYPE_LIB
-				break
+				return TYPE_LIB
 			}
 		}
 	}
+}
 
+func askProjectName() string {
 	for {
 		fmt.Print("What is the name of your project? ")
 		reader := bufio.NewReader(os.Stdin)
-		projectName, err = reader.ReadString('\n')
+		projectName, err := reader.ReadString('\n')
 		projectName = projectName[:len(projectName)-1]
 		if err == nil && projectName != "" {
-			break
+			return projectName
 		}
 	}
+}
 
+func askProjectLicense() string {
+	var projectLicense string
 	for {
 		fmt.Print("Which license (SPDX License or none) should your project use? ")
 		reader := bufio.NewReader(os.Stdin)
-		projectLicense, err = reader.ReadString('\n')
+		projectLicense, err := reader.ReadString('\n')
 		projectLicense = projectLicense[:len(projectLicense)-1]
 
 		if projectLicense == "none" {
@@ -122,16 +112,16 @@ func Create(context *cli.Context) error {
 			}
 			defer resp.Body.Close()
 
-			license_bytes, err := ioutil.ReadAll(resp.Body)
+			licenseBytes, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				continue
 			}
-			license := string(license_bytes)
+			license := string(licenseBytes)
 			if license == "404: Not Found\n" {
 				continue
 			}
 
-			err = ioutil.WriteFile("LICENSE", license_bytes, 0644)
+			err = ioutil.WriteFile("LICENSE", licenseBytes, 0644)
 			if err != nil {
 				continue
 			}
@@ -140,26 +130,45 @@ func Create(context *cli.Context) error {
 		}
 	}
 
+	return projectLicense
+}
+
+func askProjectDescription() string {
 	for {
 		fmt.Println("Please enter a description of your project:")
 		reader := bufio.NewReader(os.Stdin)
-		projectDescription, err = reader.ReadString('\n')
+		projectDescription, err := reader.ReadString('\n')
 		projectDescription = projectDescription[:len(projectDescription)-1]
 		if err == nil && projectDescription != "" {
-			break
+			return projectDescription
 		}
 	}
+}
 
+func askProjectAuthors() []string {
 	for {
 		fmt.Println("Please enter a comma-separated list of the authors of this project:")
 		reader := bufio.NewReader(os.Stdin)
-		project_authors_str, err := reader.ReadString('\n')
-		project_authors_str = project_authors_str[:len(project_authors_str)-1]
-		if err == nil && project_authors_str != "" {
-			projectAuthors = strings.Split(project_authors_str, ",")
-			break
+		projectAuthorsStr, err := reader.ReadString('\n')
+		projectAuthorsStr = projectAuthorsStr[:len(projectAuthorsStr)-1]
+		if err == nil && projectAuthorsStr != "" {
+			return strings.Split(projectAuthorsStr, ",")
 		}
 	}
+}
+
+// Create creates a new burrow project.
+func Create(context *cli.Context) error {
+	if _, err := os.Stat("burrow.yaml"); err == nil {
+		fmt.Println("Already a burrow project!")
+		return cli.NewExitError("", burrow.EXIT_ACTION)
+	}
+
+	projectType := askProjectType()
+	projectName := askProjectName()
+	projectLicense := askProjectLicense()
+	projectDescription := askProjectDescription()
+	projectAuthors := askProjectAuthors()
 
 	config := burrow.Configuration{}
 	config.Name = projectName
@@ -173,7 +182,7 @@ func Create(context *cli.Context) error {
 	config.Args.Go.Build = ""
 	config.Args.Go.Doc = ""
 	config.Args.Go.Vet = ""
-	config.Args.Go.Fmt = ""
+	config.Args.Go.Fmt = "-s"
 	config.Args.Glide.Install = ""
 	config.Args.Glide.Update = ""
 	config.Args.Glide.Get = ""

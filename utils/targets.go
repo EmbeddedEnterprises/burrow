@@ -36,7 +36,7 @@ import (
 )
 
 var targetState = map[string]bool{}
-var projectHash string = ""
+var projectHash string
 
 // IsTargetUpToDate checks whether a given build target is up-to-date. This means that all build
 // artifacts of the target were created from data with the same timestamp as the currently
@@ -80,8 +80,8 @@ func IsTargetUpToDate(target string, outputs []string) bool {
 	}
 
 	for path, mtime := range codeFiles {
-		cached_mtime, ok := cachedCodeFiles[path]
-		if !ok || cached_mtime < mtime {
+		cachedMtime, ok := cachedCodeFiles[path]
+		if !ok || cachedMtime < mtime {
 			targetState[target] = false
 			return false
 		}

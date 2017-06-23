@@ -61,7 +61,7 @@ Authors:
 	app := cli.NewApp()
 	app.Name = "burrow"
 	app.Usage = "A go build system that uses glide for dependency management."
-	app.Version = "0.0.12"
+	app.Version = "0.0.13"
 	app.Authors = []cli.Author{
 		{
 			Name:  "Fin Christensen",
@@ -195,7 +195,7 @@ Authors:
 		},
 		{
 			Name:        "check",
-			Aliases:     []string{},
+			Aliases:     []string{"vet"},
 			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Check the code with go vet.",
 			Description: "This runs go tool vet in the current directory. Any arguments following -- will be directly passed to go.",

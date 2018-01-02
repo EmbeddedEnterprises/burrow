@@ -25,10 +25,24 @@ $ go get github.com/EmbeddedEnterprises/burrow
 To create a burrow project just create an empty folder inside your `GOPATH` and run
 
 ```
+$ cd "$GOPATH"/src/github.com/EmbeddedEnterprises/
+$ mkdir test
 $ burrow init
 ```
 
 and you will be guided through the project setup. You can edit the created `burrow.yaml` manually to enter additional parameters for the `go tool` commands. When you are creating a binary project a `main.go` will be created. Otherwise a `lib.go` will be created.
+
+You may access the project outside the `GOPATH` by symlinking to the project folder in your `GOPATH`. `burrow` will detect the symlink let you use it like if you were inside the `GOPATH`.
+
+```
+$ ln -s "$GOPATH"/src/github.com/EmbeddedEnterprises/test ~/Development/github/test
+$ cd ~/Development/github.com/test
+$ burrow build
+```
+
+### What about go generate?
+
+As I currently do not use `go generate` and do not know how it would integrate in the burrow workflow, the generate command is currently not supported by burrow. Feel free to add it by yourself and make a pull request. You may also open an issue on this topic and discuss implementation approaches.
 
 ### The project layout of a burrow project
 

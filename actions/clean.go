@@ -48,7 +48,7 @@ func Clean(context *cli.Context) error {
 	}
 
 	return filepath.Walk("./package", func(path string, f os.FileInfo, err error) error {
-		if f.IsDir() {
+		if f == nil || f.IsDir() {
 			return nil
 		}
 		return os.Remove(path)

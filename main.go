@@ -1,5 +1,3 @@
-// -*- mode: go; tab-width: 4; -*-
-
 /* burrow - a go build system that uses glide for dependency management.
  *
  * Copyright (C) 2017  EmbeddedEnterprises
@@ -61,7 +59,7 @@ Authors:
 	app := cli.NewApp()
 	app.Name = "burrow"
 	app.Usage = "A go build system that uses glide for dependency management."
-	app.Version = "0.1.0"
+	app.Version = "0.1.1"
 	app.Authors = []cli.Author{
 		{
 			Name:  "Fin Christensen",

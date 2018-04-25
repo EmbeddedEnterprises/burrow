@@ -59,7 +59,7 @@ Authors:
 	app := cli.NewApp()
 	app.Name = "burrow"
 	app.Usage = "A go build system that uses glide for dependency management."
-	app.Version = "0.1.1"
+	app.Version = "0.1.2"
 	app.Authors = []cli.Author{
 		{
 			Name:  "Fin Christensen",

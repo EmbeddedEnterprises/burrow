@@ -1,23 +1,23 @@
 name: burrow
-version: 0.1.2
+version: 0.2.0
 description: A go build system that uses glide for dependency management.
 authors:
-  - Fin Christensen <christensen.fin@gmail.com>
+- Fin Christensen <christensen.fin@gmail.com>
 license: GPL-3.0
 package:
-  include:
+  include: []
 args:
-  run:
+  run: ""
   go:
-    test:
-    build:
-    doc:
-    vet:
+    test: ""
+    build: ""
+    doc: ""
+    vet: ""
     fmt: -s
   glide:
-    install:
-    update:
-    get:
+    install: ""
+    update: ""
+    get: ""
   git:
     tag: -s -m 'Update version'
-    clone:
+    clone: ""

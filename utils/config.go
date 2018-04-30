@@ -91,3 +91,18 @@ func LoadConfig() {
 
 	isConfigLoaded = true
 }
+
+// SaveConfig save the current project configuration to the burrow.yaml.
+func SaveConfig() {
+	data, err := yaml.Marshal(Config)
+	if err != nil {
+		Log(LOG_ERR, "burrow", "Failed to marshal new config to yaml!")
+		os.Exit(EXIT_CONFIG)
+	}
+
+	err = ioutil.WriteFile("burrow.yaml", data, 0644)
+	if err != nil {
+		Log(LOG_ERR, "burrow", "Failed to write new config!")
+		os.Exit(EXIT_CONFIG)
+	}
+}

@@ -59,7 +59,7 @@ Authors:
 	app := cli.NewApp()
 	app.Name = "burrow"
 	app.Usage = "A go build system that uses glide for dependency management."
-	app.Version = "0.1.2"
+	app.Version = "0.2.0"
 	app.Authors = []cli.Author{
 		{
 			Name:  "Fin Christensen",
@@ -198,6 +198,30 @@ Authors:
 			Usage:       "Check the code with go vet.",
 			Description: "This runs go tool vet in the current directory. Any arguments following -- will be directly passed to go.",
 			Action:      utils.WrapAction(actions.Check),
+		},
+		{
+			Name:        "major",
+			Aliases:     []string{},
+			Flags:       []cli.Flag{},
+			Usage:       "Increment the major part of the version for this project.",
+			Description: "This increments the version number stored in the burrow.yaml file by the major part of the semantic version string.",
+			Action:      actions.Major,
+		},
+		{
+			Name:        "minor",
+			Aliases:     []string{},
+			Flags:       []cli.Flag{},
+			Usage:       "Increment the minor part of the version for this project.",
+			Description: "This increments the version number stored in the burrow.yaml file by the minor part of the semantic version string.",
+			Action:      actions.Minor,
+		},
+		{
+			Name:        "patch",
+			Aliases:     []string{},
+			Flags:       []cli.Flag{},
+			Usage:       "Increment the patch part of the version for this project.",
+			Description: "This increments the version number stored in the burrow.yaml file by the patch part of the semantic version string.",
+			Action:      actions.Patch,
 		},
 	}
 

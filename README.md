@@ -95,7 +95,10 @@ Commands:
    clean                  Clean the project from any build artifacts.
    doc                    Host the go documentation on this machine.
    format, fmt            Format the code of this project with gofmt.
-   check                  Check the code with go vet.
+   check, vet             Check the code with go vet.
+   major                  Increment the major part of the version for this project.
+   minor                  Increment the minor part of the version for this project.
+   patch                  Increment the patch part of the version for this project.
    help, h                Shows a list of commands or help for one command
 
 Global options:

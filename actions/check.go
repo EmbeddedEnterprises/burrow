@@ -53,10 +53,12 @@ func Check(context *cli.Context, useSecondLevelArgs bool) error {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
 
-	args = append(args, burrow.GetCodefiles()...)
-	err = burrow.Exec("check", "go", args...)
-	if err == nil {
-		burrow.UpdateTarget("check", outputs)
+	for _, file := range burrow.GetCodefiles() {
+		err = burrow.Exec("check", "go", append(args, file)...)
+		if err == nil {
+			burrow.UpdateTarget("check", outputs)
+		}
 	}
+
 	return err
 }

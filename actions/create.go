@@ -167,7 +167,7 @@ type Project struct {
 	Authors     []string
 }
 
-// Create a new project from user input from stdin.
+// NewProject creates a new project from user input from stdin.
 func NewProject() *Project {
 	projectType := askProjectType()
 	projectName := askProjectName()

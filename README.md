@@ -80,8 +80,9 @@ Usage: burrow [global options] command [command options] [arguments...]
 A go build system that uses glide for dependency management.
 
 Commands:
-   init, create           Create a new burrow project.
-   clone                  Clone a git repository into your GOPATH and create a symbolic link in your current location.
+   init, create           Initializes a directory as a burrow project.
+   new                    Creates a new folder that contains an empty burrow project.
+   clone                  Clone a git repository into your GOPATH and create a symbolic link in your current location when not inside GOPATH.
    get                    Install a dependency in the vendor folder and add it to the glide yaml.
    fetch, ensure, f, e    Get all dependencies from the lock file to reproduce a build.
    update, u, up          Update all dependencies from the yaml file and update the lock file.
@@ -108,7 +109,7 @@ Global options:
 Authors:
    Fin Christensen <christensen.fin@gmail.com>
    
-burrow - Copyright (c) 2017  EmbeddedEnterprises
+burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 ```
 
 ## License

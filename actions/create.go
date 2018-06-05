@@ -157,6 +157,7 @@ func askProjectAuthors() []string {
 	}
 }
 
+// Project describes all inputs that are needed to create a new project.
 type Project struct {
 	Location    string
 	Type        ProjectType
@@ -166,6 +167,7 @@ type Project struct {
 	Authors     []string
 }
 
+// Create a new project from user input from stdin.
 func NewProject() *Project {
 	projectType := askProjectType()
 	projectName := askProjectName()
@@ -183,6 +185,7 @@ func NewProject() *Project {
 	}
 }
 
+// Dump writes all files of a project to the specified location (Project.Location).
 func (p *Project) Dump() error {
 	config := burrow.Configuration{}
 	config.Name = p.Name
@@ -253,7 +256,7 @@ func (p *Project) Dump() error {
 	return burrow.ExecDir("", p.Location, "glide", "init")
 }
 
-// Initializes a directory as a burrow project.
+// Create initializes a directory as a burrow project.
 func Create(context *cli.Context) error {
 	if _, err := os.Stat("burrow.yaml"); err == nil {
 		fmt.Println("Already a burrow project!")

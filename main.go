@@ -72,7 +72,7 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 	app := cli.NewApp()
 	app.Name = "burrow"
 	app.Usage = "A go build system that uses glide for dependency management."
-	app.Version = "0.3.0"
+	app.Version = "0.3.1"
 	app.Authors = []cli.Author{
 		{
 			Name:  "Fin Christensen",

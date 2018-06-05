@@ -43,7 +43,7 @@ func askProjectPath() string {
 	}
 }
 
-// Create creates a new burrow project.
+// New creates a new burrow project in the GOPATH.
 func New(context *cli.Context) error {
 	cwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {

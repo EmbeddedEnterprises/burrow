@@ -1,5 +1,3 @@
-// -*- mode: go; tab-width: 4; -*-
-
 /* burrow - a go build system that uses glide for dependency management.
  *
  * Copyright (C) 2017  EmbeddedEnterprises
@@ -33,8 +31,17 @@ import (
 // (empty string) stdout and stderr of the command will be directly mapped to the stdout and
 // stderr of the application.
 func Exec(target string, comm string, args ...string) error {
+	return ExecDir(target, "", comm, args...)
+}
+
+// ExecDir runs a given command (comm) with arguments (args) inside a given directory (dir)
+// and redirects all output of stderr and stdout to a logger with the given target as logging
+// target (tag/name). When the target is "" (empty string) stdout and stderr of the command
+// will be directly mapped to the stdout and stderr of the application.
+func ExecDir(target string, dir string, comm string, args ...string) error {
 	cmd := exec.Command(comm, args...)
 	cmd.Stdin = os.Stdin
+	cmd.Dir = dir
 
 	if target == "" {
 		cmd.Stdout = os.Stdout

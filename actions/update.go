@@ -1,5 +1,3 @@
-// -*- mode: go; tab-width: 4; -*-
-
 /* burrow - a go build system that uses glide for dependency management.
  *
  * Copyright (C) 2017  EmbeddedEnterprises
@@ -39,7 +37,7 @@ func Update(context *cli.Context, useSecondLevelArgs bool) error {
 	userArgs, err := shellwords.Parse(burrow.Config.Args.Glide.Update)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "update", "Failed to read user arguments from config file: %s", err)
-		return nil
+		return err
 	}
 	args = append(args, userArgs...)
 

@@ -1,5 +1,3 @@
-// -*- mode: go; tab-width: 4; -*-
-
 /* burrow - a go build system that uses glide for dependency management.
  *
  * Copyright (C) 2017  EmbeddedEnterprises
@@ -27,6 +25,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/EmbeddedEnterprises/burrow/utils"
@@ -157,25 +157,39 @@ func askProjectAuthors() []string {
 	}
 }
 
-// Create creates a new burrow project.
-func Create(context *cli.Context) error {
-	if _, err := os.Stat("burrow.yaml"); err == nil {
-		fmt.Println("Already a burrow project!")
-		return cli.NewExitError("", burrow.EXIT_ACTION)
-	}
+type Project struct {
+	Location    string
+	Type        ProjectType
+	Name        string
+	License     string
+	Description string
+	Authors     []string
+}
 
+func NewProject() *Project {
 	projectType := askProjectType()
 	projectName := askProjectName()
 	projectLicense := askProjectLicense()
 	projectDescription := askProjectDescription()
 	projectAuthors := askProjectAuthors()
 
+	return &Project{
+		Location:    path.Dir("."),
+		Type:        projectType,
+		Name:        projectName,
+		License:     projectLicense,
+		Description: projectDescription,
+		Authors:     projectAuthors,
+	}
+}
+
+func (p *Project) Dump() error {
 	config := burrow.Configuration{}
-	config.Name = projectName
+	config.Name = p.Name
 	config.Version = "0.1.0"
-	config.Description = projectDescription
-	config.Authors = projectAuthors
-	config.License = projectLicense
+	config.Description = p.Description
+	config.Authors = p.Authors
+	config.License = p.License
 	config.Package.Include = []string{}
 	config.Args.Run = ""
 	config.Args.Go.Test = ""
@@ -188,21 +202,80 @@ func Create(context *cli.Context) error {
 	config.Args.Glide.Get = ""
 	config.Args.Git.Tag = "-s -m 'Update version'"
 	config.Args.Git.Clone = ""
-	ser, _ := yaml.Marshal(&config)
-
-	_ = os.Mkdir("example", 0755)
-	_ = ioutil.WriteFile("burrow.yaml", []byte(ser), 0644)
-	_ = ioutil.WriteFile("README.md", []byte(fmt.Sprintf(readme, projectName, projectDescription)), 0644)
-	_ = ioutil.WriteFile(".gitignore", []byte(gitignore), 0644)
-
-	switch projectType {
-	case TYPE_BIN:
-		_ = ioutil.WriteFile("main.go", []byte(main), 0644)
-	case TYPE_LIB:
-		_ = ioutil.WriteFile("lib.go", []byte(fmt.Sprintf(lib, projectName)), 0644)
+	ser, err := yaml.Marshal(&config)
+	if err != nil {
+		burrow.Log(burrow.LOG_ERR, "project", "Failed to serialize config file: %s", err)
+		return err
 	}
 
-	burrow.Exec("", "glide", "init")
+	if _, err = os.Stat(p.Location); os.IsNotExist(err) {
+		os.Mkdir(p.Location, 0755)
+	}
 
-	return nil
+	if err = os.Mkdir(path.Join(p.Location, "example"), 0755); err != nil {
+		burrow.Log(burrow.LOG_ERR, "project", "Failed to create example directory!")
+		return err
+	}
+	if err = ioutil.WriteFile(path.Join(p.Location, "burrow.yaml"), []byte(ser), 0644); err != nil {
+		burrow.Log(burrow.LOG_ERR, "project", "Failed to write configuration!")
+		return err
+	}
+	if err = ioutil.WriteFile(
+		path.Join(p.Location, "README.md"),
+		[]byte(fmt.Sprintf(readme, p.Name, p.Description)),
+		0644,
+	); err != nil {
+		burrow.Log(burrow.LOG_ERR, "project", "Failed to write README!")
+		return err
+	}
+	if err = ioutil.WriteFile(path.Join(p.Location, ".gitignore"), []byte(gitignore), 0644); err != nil {
+		burrow.Log(burrow.LOG_ERR, "project", "Failed to write gitignore!")
+		return err
+	}
+
+	switch p.Type {
+	case TYPE_BIN:
+		if err = ioutil.WriteFile(path.Join(p.Location, "main.go"), []byte(main), 0644); err != nil {
+			burrow.Log(burrow.LOG_ERR, "project", "Failed to write main.go!")
+			return err
+		}
+	case TYPE_LIB:
+		if err = ioutil.WriteFile(
+			path.Join(p.Location, "lib.go"),
+			[]byte(fmt.Sprintf(lib, p.Name)),
+			0644,
+		); err != nil {
+			burrow.Log(burrow.LOG_ERR, "project", "Failed to write lib.go!")
+			return err
+		}
+	}
+
+	return burrow.ExecDir("", p.Location, "glide", "init")
+}
+
+// Initializes a directory as a burrow project.
+func Create(context *cli.Context) error {
+	if _, err := os.Stat("burrow.yaml"); err == nil {
+		fmt.Println("Already a burrow project!")
+		return cli.NewExitError("", burrow.EXIT_ACTION)
+	}
+
+	cwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		burrow.Log(burrow.LOG_ERR, "init", "Failed to get current directory!")
+		return err
+	}
+
+	gopath, err := filepath.Abs(os.Getenv("GOPATH"))
+	if err != nil {
+		burrow.Log(burrow.LOG_ERR, "init", "Failed to get GOPATH!")
+		return err
+	}
+
+	if !strings.HasPrefix(cwd, gopath) {
+		burrow.Log(burrow.LOG_WARN, "init", "Initializing project outside of GOPATH!")
+	}
+
+	project := NewProject()
+	return project.Dump()
 }

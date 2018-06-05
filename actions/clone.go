@@ -1,5 +1,3 @@
-// -*- mode: go; tab-width: 4; -*-
-
 /* burrow - a go build system that uses glide for dependency management.
  *
  * Copyright (C) 2017  EmbeddedEnterprises
@@ -23,6 +21,7 @@ package burrow
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/EmbeddedEnterprises/burrow/utils"
@@ -30,15 +29,21 @@ import (
 	"github.com/urfave/cli"
 )
 
-// Clone clones a git repository into the GOPATH and creates a symlink in the cwd.
+// Clone clones a git repository into the GOPATH and creates a symlink in the cwd when cwd is not in GOPATH.
 func Clone(context *cli.Context) error {
 	options := context.Args()
 
-	if len(options) < 1 || len(options) > 2 {
-		burrow.Log(burrow.LOG_ERR, "clone", "Invalid number of arguments!")
+	if len(options) != 1 {
+		cli.ShowCommandHelp(context, "clone")
+		return nil
 	}
 
-	gopath := os.Getenv("GOPATH")
+	gopath, err := filepath.Abs(os.Getenv("GOPATH"))
+	if err != nil {
+		burrow.Log(burrow.LOG_ERR, "clone", "Failed to get GOPATH!")
+		return err
+	}
+
 	url := options[0]
 	destination := options[0]
 
@@ -61,12 +66,26 @@ func Clone(context *cli.Context) error {
 	userArgs, err := shellwords.Parse(burrow.Config.Args.Git.Clone)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "clone", "Failed to read user arguments from config file: %s", err)
-		return nil
+		return err
 	}
 	args = append(args, userArgs...)
 	if err := burrow.Exec("clone", "git", args...); err != nil {
-		return nil
+		return err
 	}
 
-	return os.Symlink(destination, link)
+	cwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		burrow.Log(burrow.LOG_ERR, "clone", "Failed to get current directory!")
+		return err
+	}
+
+	// only create symlink if not in GOPATH
+	if !strings.HasPrefix(cwd, gopath) {
+		if err = os.Symlink(destination, link); err != nil {
+			burrow.Log(burrow.LOG_ERR, "clone", "Failed to create symlink!")
+			return err
+		}
+	}
+
+	return nil
 }

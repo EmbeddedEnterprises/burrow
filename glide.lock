@@ -1,12 +1,14 @@
 hash: d7dd9db91843b72dd0c4afccffeaaf50d810ecd5134b88d0e1783b6e3b9d3c00
-updated: 2018-04-30T16:05:50.702948475+02:00
+updated: 2018-06-05T14:21:45.450610413+02:00
 imports:
 - name: github.com/coreos/go-semver
   version: 8ab6407b697782a06568d4b7f1db25550ec2e4c6
+  subpackages:
+  - semver
 - name: github.com/fatih/color
-  version: 507f6050b8568533fb3f5504de8e5205fa62a114
+  version: 5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4
 - name: github.com/go-yaml/yaml
-  version: d670f9405373e636a5a2765eea47fac0c9bc91a4
+  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 - name: github.com/mattn/go-colorable
   version: efa589957cd060542a26d2dd7832fd6a6c6c3ade
 - name: github.com/mattn/go-isatty

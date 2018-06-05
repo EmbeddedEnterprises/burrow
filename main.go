@@ -39,9 +39,7 @@ func main() {
 		Usage: "Run an example (specified by name) instead of the application itself",
 	}
 
-	// TODO: Add readme
-
-	cli.AppHelpTemplate = `Usage: {{.HelpName}} {{if .VisibleFlags}}[global options]{{end}}{{if .Commands}} command [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}
+	cli.AppHelpTemplate = `Usage: {{.HelpName}}{{if .VisibleFlags}} [global options]{{end}}{{if .Commands}} command [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}
 
 {{.Usage}}
 {{if .Commands}}
@@ -49,24 +47,39 @@ Commands:
 {{range .Commands}}{{if not .HideHelp}}   {{join .Names ", "}}{{ "\t"}}{{.Usage}}{{ "\n" }}{{end}}{{end}}{{end}}{{if .VisibleFlags}}
 Global options:
    {{range .VisibleFlags}}{{.}}
-   {{end}}{{end}}{{if len .Authors}}
+   {{end}}{{end}}{{if .Authors}}
 Authors:
-   {{range .Authors}}{{ . }}{{end}}
-   {{end}}{{if .Commands}}
-{{.Name}} - {{.Copyright}}{{end}}
+   {{range .Authors}}{{.}}
+   {{end}}{{end}}
+{{.Name}} - {{.Copyright}}
+`
+	cli.CommandHelpTemplate = `Usage: {{.HelpName}}{{if .VisibleFlags}} [options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}
+
+{{.Usage}}{{if .Description}}
+
+Description:
+   {{.Description}}
+   {{end}}{{if .VisibleFlags}}
+Options:
+   {{range .VisibleFlags}}{{.}}
+   {{end}}{{end}}{{if .Aliases}}
+Aliases:
+   {{join .Aliases ", "}}
+   {{end}}
+burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 `
 
 	app := cli.NewApp()
 	app.Name = "burrow"
 	app.Usage = "A go build system that uses glide for dependency management."
-	app.Version = "0.2.0"
+	app.Version = "0.3.0"
 	app.Authors = []cli.Author{
 		{
 			Name:  "Fin Christensen",
 			Email: "christensen.fin@gmail.com",
 		},
 	}
-	app.Copyright = "Copyright (c) 2017  EmbeddedEnterprises"
+	app.Copyright = "Copyright (c) 2017-2018  EmbeddedEnterprises"
 	app.Action = func(context *cli.Context) error {
 		return cli.ShowAppHelp(context)
 	}
@@ -75,16 +88,24 @@ Authors:
 			Name:        "init",
 			Aliases:     []string{"create"},
 			Flags:       []cli.Flag{},
-			Usage:       "Create a new burrow project.",
-			Description: "This action creates a new burrow project in the current directory.",
+			Usage:       "Initializes a directory as a burrow project.",
+			Description: "This action creates a new burrow project in the current directory. Only run inside a folder in your GOPATH!",
 			Action:      actions.Create,
+		},
+		{
+			Name:        "new",
+			Aliases:     []string{},
+			Flags:       []cli.Flag{},
+			Usage:       "Creates a new folder that contains an empty burrow project.",
+			Description: "This action creates a new folder in your GOPATH containing an empty burrow project. A symlink to the location in your GOPATH is created if this command is run outside the GOPATH.",
+			Action:      actions.New,
 		},
 		{
 			Name:        "clone",
 			Aliases:     []string{},
 			Flags:       []cli.Flag{},
-			Usage:       "Clone a git repository into your GOPATH and create a symbolic link in your current location.",
-			Description: "This action clones a git repository (go-get url scheme) into your GOPATH and creates a symbolic link in the current directory.",
+			Usage:       "Clone a git repository into your GOPATH and create a symbolic link in your current location when not inside GOPATH.",
+			Description: "This action clones a git repository (go-get url scheme) into your GOPATH and creates a symbolic link in the current directory if the current directory is not located in the GOPATH.",
 			Action:      actions.Clone,
 		},
 		{

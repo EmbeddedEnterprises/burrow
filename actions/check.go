@@ -39,7 +39,7 @@ func Check(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.Log(burrow.LOG_INFO, "check", "Checking code")
 
 	args := []string{}
-	args = append(args, "tool", "vet")
+	args = append(args, "vet")
 	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Vet)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "check", "Failed to read user arguments from config file: %s", err)
@@ -50,12 +50,9 @@ func Check(context *cli.Context, useSecondLevelArgs bool) error {
 	if useSecondLevelArgs {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
-
-	for _, file := range burrow.GetCodefiles() {
-		err = burrow.Exec("check", "go", append(args, file)...)
-		if err == nil {
-			burrow.UpdateTarget("check", outputs)
-		}
+	err = burrow.Exec("check", "go", args...)
+	if err == nil {
+		burrow.UpdateTarget("check", outputs)
 	}
 
 	return err

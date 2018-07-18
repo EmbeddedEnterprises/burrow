@@ -23,7 +23,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	actions "github.com/EmbeddedEnterprises/burrow/actions"
@@ -259,25 +258,13 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 		fmt.Fprintf(os.Stderr, "Failed to resolve working directory: %s\n", err)
 		os.Exit(1)
 	}
+
 	if wd != wdold {
-		fmt.Fprintf(os.Stderr, "wanted: %s, have: %s \n", wd, wdold)
-		if _, ok := os.LookupEnv("FORKED"); ok {
-			fmt.Printf("Fork failed!\n")
-			os.Exit(3)
-		}
-		fmt.Fprintf(os.Stderr, "pseudo-forking\n")
 		os.Chdir(wd)
 		defer os.Chdir(wdold)
-		cmd := exec.Command(os.Args[0], os.Args[1:]...)
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		cmd.Dir = wd
-		cmd.Env = append([]string{fmt.Sprintf("PWD=%s", wd), "FORKED=1"}, os.Environ()...)
-		if err = cmd.Run(); err != nil {
-			os.Exit(2)
-		}
-		os.Exit(0)
+		pwdVal := os.Getenv("PWD")
+		os.Setenv("PWD", wd)
+		defer os.Setenv("PWD", pwdVal)
 	}
 
 	app.Run(os.Args)

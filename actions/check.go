@@ -20,6 +20,8 @@
 package burrow
 
 import (
+	"os"
+
 	"github.com/EmbeddedEnterprises/burrow/utils"
 	"github.com/mattn/go-shellwords"
 	"github.com/urfave/cli"
@@ -50,7 +52,12 @@ func Check(context *cli.Context, useSecondLevelArgs bool) error {
 	if useSecondLevelArgs {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
-	err = burrow.Exec("check", "go", args...)
+	wd, err := os.Getwd()
+	if err != nil {
+		burrow.Log(burrow.LOG_ERR, "check", "Failed to get working directory: %s", err)
+		return err
+	}
+	err = burrow.ExecDir("check", wd, "go", args...)
 	if err == nil {
 		burrow.UpdateTarget("check", outputs)
 	}

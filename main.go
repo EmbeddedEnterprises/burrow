@@ -21,9 +21,7 @@
 package main
 
 import (
-	"fmt"
 	"os"
-	"path/filepath"
 
 	actions "github.com/EmbeddedEnterprises/burrow/actions"
 	utils "github.com/EmbeddedEnterprises/burrow/utils"
@@ -246,25 +244,6 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Description: "This increments the version number stored in the burrow.yaml file by the patch part of the semantic version string.",
 			Action:      actions.Patch,
 		},
-	}
-
-	wdold, err := os.Getwd()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to get current working directory: %s\n", err)
-		os.Exit(1)
-	}
-	wd, err := filepath.EvalSymlinks(wdold)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to resolve working directory: %s\n", err)
-		os.Exit(1)
-	}
-
-	if wd != wdold {
-		os.Chdir(wd)
-		defer os.Chdir(wdold)
-		pwdVal := os.Getenv("PWD")
-		os.Setenv("PWD", wd)
-		defer os.Setenv("PWD", pwdVal)
 	}
 
 	app.Run(os.Args)

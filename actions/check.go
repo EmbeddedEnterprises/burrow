@@ -41,7 +41,7 @@ func Check(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.Log(burrow.LOG_INFO, "check", "Checking code")
 
 	args := []string{}
-	args = append(args, "vet")
+	args = append(args, "vet", "./...") // ./... is a 'wildcard package'
 	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Vet)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "check", "Failed to read user arguments from config file: %s", err)

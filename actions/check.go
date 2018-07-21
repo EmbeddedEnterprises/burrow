@@ -20,6 +20,8 @@
 package burrow
 
 import (
+	"os"
+
 	"github.com/EmbeddedEnterprises/burrow/utils"
 	"github.com/mattn/go-shellwords"
 	"github.com/urfave/cli"
@@ -39,7 +41,7 @@ func Check(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.Log(burrow.LOG_INFO, "check", "Checking code")
 
 	args := []string{}
-	args = append(args, "tool", "vet")
+	args = append(args, "vet", "./...") // ./... is a 'wildcard package'
 	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Vet)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "check", "Failed to read user arguments from config file: %s", err)
@@ -50,12 +52,14 @@ func Check(context *cli.Context, useSecondLevelArgs bool) error {
 	if useSecondLevelArgs {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
-
-	for _, file := range burrow.GetCodefiles() {
-		err = burrow.Exec("check", "go", append(args, file)...)
-		if err == nil {
-			burrow.UpdateTarget("check", outputs)
-		}
+	wd, err := os.Getwd()
+	if err != nil {
+		burrow.Log(burrow.LOG_ERR, "check", "Failed to get working directory: %s", err)
+		return err
+	}
+	err = burrow.ExecDir("check", wd, "go", args...)
+	if err == nil {
+		burrow.UpdateTarget("check", outputs)
 	}
 
 	return err

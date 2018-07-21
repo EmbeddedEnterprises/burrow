@@ -20,8 +20,11 @@
 package burrow
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"strings"
 
 	"github.com/urfave/cli"
 )
@@ -41,7 +44,20 @@ func Exec(target string, comm string, args ...string) error {
 func ExecDir(target string, dir string, comm string, args ...string) error {
 	cmd := exec.Command(comm, args...)
 	cmd.Stdin = os.Stdin
+
+	dir, err := filepath.EvalSymlinks(dir)
+	if err != nil {
+		return err
+	}
 	cmd.Dir = dir
+	env := os.Environ()
+	cmd.Env = make([]string, len(env))
+	for _, val := range os.Environ() {
+		if strings.HasPrefix(val, "PWD=") {
+			val = fmt.Sprintf("PWD=%s", dir)
+		}
+		cmd.Env = append(cmd.Env, val)
+	}
 
 	if target == "" {
 		cmd.Stdout = os.Stdout

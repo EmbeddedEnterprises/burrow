@@ -59,8 +59,8 @@ func IsTargetUpToDate(target string, outputs []string) bool {
 	}
 
 	usr, _ := user.Current()
-	_ = os.Mkdir(usr.HomeDir+"/.cache/burrow/", 0755)
-	_ = os.Mkdir(usr.HomeDir+"/.cache/burrow/"+projectHash, 0755)
+	_ = os.MkdirAll(usr.HomeDir+"/.cache/burrow/", 0755)
+	_ = os.MkdirAll(usr.HomeDir+"/.cache/burrow/"+projectHash, 0755)
 
 	cache, err := ioutil.ReadFile(usr.HomeDir + "/.cache/burrow/" + projectHash + "/" + target)
 	if err != nil {

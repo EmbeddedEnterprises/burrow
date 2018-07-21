@@ -212,10 +212,13 @@ func (p *Project) Dump() error {
 	}
 
 	if _, err = os.Stat(p.Location); os.IsNotExist(err) {
-		os.Mkdir(p.Location, 0755)
+		if err = os.MkdirAll(p.Location, 0755); err != nil {
+			burrow.Log(burrow.LOG_ERR, "project", "Failed to create project directory!")
+			return err
+		}
 	}
 
-	if err = os.Mkdir(path.Join(p.Location, "example"), 0755); err != nil {
+	if err = os.MkdirAll(path.Join(p.Location, "example"), 0755); err != nil {
 		burrow.Log(burrow.LOG_ERR, "project", "Failed to create example directory!")
 		return err
 	}

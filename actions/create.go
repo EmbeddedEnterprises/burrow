@@ -81,13 +81,27 @@ func askProjectType() ProjectType {
 	}
 }
 
-func askProjectName() string {
+func askProjectName(projectType ProjectType) string {
 	for {
-		fmt.Print("What is the name of your project? ")
+		fmt.Print("What is the name of your project? \n")
+
+		isLib := projectType == TYPE_LIB
+
+		if isLib {
+			fmt.Print("It should be short and clear and should not contain dashes. \n")
+			fmt.Print("More Information: https://blog.golang.org/package-names \n")
+		}
+
 		reader := bufio.NewReader(os.Stdin)
 		projectName, err := reader.ReadString('\n')
 		projectName = projectName[:len(projectName)-1]
-		if err == nil && projectName != "" {
+
+		// It should not be possible to create libs, which contains dash in their name.
+		// This will result in an invalid package name and glide will go nuts.
+
+		isDasherized := strings.Contains(projectName, "-")
+
+		if err == nil && projectName != "" && (!isLib || !isDasherized) {
 			return projectName
 		}
 	}
@@ -170,7 +184,7 @@ type Project struct {
 // NewProject creates a new project from user input from stdin.
 func NewProject() *Project {
 	projectType := askProjectType()
-	projectName := askProjectName()
+	projectName := askProjectName(projectType)
 	projectLicense := askProjectLicense()
 	projectDescription := askProjectDescription()
 	projectAuthors := askProjectAuthors()

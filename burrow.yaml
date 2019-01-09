@@ -13,10 +13,7 @@ args:
     build: ""
     doc: ""
     vet: ""
-    fmt: -s
-  glide:
-    install: ""
-    update: ""
+    fmt: ""
     get: ""
   git:
     tag: -s -m 'Update version'

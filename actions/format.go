@@ -39,7 +39,7 @@ func Format(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.Log(burrow.LOG_INFO, "format", "Formatting code")
 
 	args := []string{}
-	args = append(args, "-l", "-w")
+	args = append(args, "fmt", "./...")
 	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Fmt)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "format", "Failed to read user arguments from config file: %s", err)
@@ -51,10 +51,12 @@ func Format(context *cli.Context, useSecondLevelArgs bool) error {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
 
-	args = append(args, burrow.GetCodefiles()...)
-	err = burrow.Exec("format", "gofmt", args...)
+	err = burrow.Exec("format", "go", args...)
 	if err == nil {
 		burrow.UpdateTarget("format", outputs)
 	}
+
+	burrow.Deprecation("format", append([]string{"go"}, args...))
+
 	return err
 }

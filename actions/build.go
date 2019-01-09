@@ -68,6 +68,7 @@ func Build(context *cli.Context, useSecondLevelArgs bool) error {
 	}
 	buildArgs := burrow.GetSecondLevelArgs()
 
+	deprecationArgs := make([][]string, 0)
 	for i, output := range outputs {
 		args := []string{}
 		args = append(args, "build", "-o", output)
@@ -79,6 +80,8 @@ func Build(context *cli.Context, useSecondLevelArgs bool) error {
 
 		args = append(args, sources[i])
 
+		deprecationArgs = append(deprecationArgs, append([]string{"go"}, args...))
+
 		if err = burrow.Exec("build", "go", args...); err != nil {
 			return err
 		}
@@ -87,6 +90,8 @@ func Build(context *cli.Context, useSecondLevelArgs bool) error {
 	if err == nil {
 		burrow.UpdateTarget("build", outputs)
 	}
+
+	burrow.Deprecation("build", deprecationArgs...)
 
 	return err
 }

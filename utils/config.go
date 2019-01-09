@@ -24,7 +24,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/go-yaml/yaml"
+	"gopkg.in/yaml.v2"
 )
 
 // The Configuration struct describes the layout of the burrow.yaml.
@@ -45,11 +45,7 @@ type Configuration struct {
 			Doc   string
 			Vet   string
 			Fmt   string
-		}
-		Glide struct {
-			Install string
-			Update  string
-			Get     string
+			Get   string
 		}
 		Git struct {
 			Tag   string

@@ -61,5 +61,8 @@ func Install(context *cli.Context) error {
 	if err == nil {
 		burrow.UpdateTarget("install", outputs)
 	}
+
+	burrow.Deprecation("install", append([]string{"go"}, args...))
+
 	return err
 }

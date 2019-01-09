@@ -29,8 +29,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/go-yaml/yaml"
 	"github.com/urfave/cli"
+	"gopkg.in/yaml.v2"
 )
 
 var targetState = map[string]bool{}

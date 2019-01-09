@@ -69,5 +69,7 @@ func Package(context *cli.Context) error {
 		burrow.UpdateTarget("package", outputs)
 	}
 
+	burrow.Deprecation("package", append([]string{"tar"}, args...))
+
 	return err
 }

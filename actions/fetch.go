@@ -20,10 +20,7 @@
 package burrow
 
 import (
-	"os"
-
 	"github.com/EmbeddedEnterprises/burrow/utils"
-	"github.com/mattn/go-shellwords"
 	"github.com/urfave/cli"
 )
 
@@ -31,20 +28,9 @@ import (
 func Fetch(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
 
-	burrow.Log(burrow.LOG_INFO, "fetch", "Fetching dependencies from lock file")
-	gopath := os.Getenv("GOPATH")
-	args := []string{}
-	args = append(args, "install")
-	userArgs, err := shellwords.Parse(burrow.Config.Args.Glide.Install)
-	if err != nil {
-		burrow.Log(burrow.LOG_ERR, "fetch", "Failed to read user arguments from config file: %s", err)
-		return err
-	}
-	args = append(args, userArgs...)
+	burrow.Deprecation("fetch")
+	burrow.Log(burrow.LOG_WARN, "fetch", "This command is not needed with the official 'go mod'! Dependencies are")
+	burrow.Log(burrow.LOG_WARN, "fetch", "automatically fetched from the go.sum file with every build.")
 
-	if useSecondLevelArgs {
-		args = append(args, burrow.GetSecondLevelArgs()...)
-	}
-
-	return burrow.Exec("fetch", gopath+"/bin/glide", args...)
+	return nil
 }

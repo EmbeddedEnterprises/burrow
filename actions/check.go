@@ -62,5 +62,7 @@ func Check(context *cli.Context, useSecondLevelArgs bool) error {
 		burrow.UpdateTarget("check", outputs)
 	}
 
+	burrow.Deprecation("check", append([]string{"go"}, args...))
+
 	return err
 }

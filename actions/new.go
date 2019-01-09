@@ -20,62 +20,10 @@
 package burrow
 
 import (
-	"bufio"
-	"fmt"
-	"os"
-	"path"
-	"path/filepath"
-	"strings"
-
-	"github.com/EmbeddedEnterprises/burrow/utils"
 	"github.com/urfave/cli"
 )
 
-func askProjectPath() string {
-	for {
-		fmt.Print("Please specify a base location for your project (e.g. github.com/myuser): ")
-		reader := bufio.NewReader(os.Stdin)
-		projectPath, err := reader.ReadString('\n')
-		projectPath = projectPath[:len(projectPath)-1]
-		if err == nil && projectPath != "" {
-			return projectPath
-		}
-	}
-}
-
 // New creates a new burrow project in the GOPATH.
 func New(context *cli.Context) error {
-	cwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		burrow.Log(burrow.LOG_ERR, "new", "Failed to get current directory!")
-		return err
-	}
-
-	gopath, err := filepath.Abs(os.Getenv("GOPATH"))
-	if err != nil {
-		burrow.Log(burrow.LOG_ERR, "new", "Failed to get GOPATH!")
-		return err
-	}
-
-	destination := "."
-	if !strings.HasPrefix(cwd, gopath) {
-		projectPath := askProjectPath()
-		destination = path.Join(gopath, "src", projectPath)
-	}
-
-	project := NewProject()
-	project.Location = path.Join(destination, project.Name)
-	err = project.Dump()
-	if err != nil {
-		burrow.Log(burrow.LOG_ERR, "new", "Failed to write project to destination!")
-		return err
-	}
-
-	err = os.Symlink(project.Location, project.Name)
-	if err != nil {
-		burrow.Log(burrow.LOG_ERR, "new", "Failed to create symlink!")
-		return err
-	}
-
-	return nil
+	return Create(context)
 }

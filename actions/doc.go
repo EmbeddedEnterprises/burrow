@@ -63,5 +63,7 @@ func Doc(context *cli.Context, useSecondLevelArgs bool) error {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
 
+	burrow.Deprecation("doc", append([]string{"godoc"}, args...))
+
 	return burrow.Exec("doc", "godoc", args...)
 }

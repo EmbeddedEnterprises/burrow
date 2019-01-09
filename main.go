@@ -66,12 +66,12 @@ Options:
 Aliases:
    {{join .Aliases ", "}}
    {{end}}
-burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
+burrow - Copyright (c) 2017-2019  EmbeddedEnterprises
 `
 
 	app := cli.NewApp()
 	app.Name = "burrow"
-	app.Usage = "A go build system that uses glide for dependency management."
+	app.Usage = "A go build system that used glide for dependency management and is now deprecated in favor of 'go mod'."
 	app.Version = "0.3.2"
 	app.Authors = []cli.Author{
 		{
@@ -79,7 +79,7 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Email: "christensen.fin@gmail.com",
 		},
 	}
-	app.Copyright = "Copyright (c) 2017-2018  EmbeddedEnterprises"
+	app.Copyright = "Copyright (c) 2017-2019  EmbeddedEnterprises"
 	app.Action = func(context *cli.Context) error {
 		return cli.ShowAppHelp(context)
 	}
@@ -88,56 +88,56 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Name:        "init",
 			Aliases:     []string{"create"},
 			Flags:       []cli.Flag{},
-			Usage:       "Initializes a directory as a burrow project.",
-			Description: "This action creates a new burrow project in the current directory. Only run inside a folder in your GOPATH!",
+			Usage:       "Initializes a directory as a burrow project (deprecation stub).",
+			Description: "This action used to create a new burrow project in the current directory. This action is now deprecated as new go projects should be created with the 'go mod' tool!",
 			Action:      actions.Create,
 		},
 		{
 			Name:        "new",
 			Aliases:     []string{},
 			Flags:       []cli.Flag{},
-			Usage:       "Creates a new folder that contains an empty burrow project.",
-			Description: "This action creates a new folder in your GOPATH containing an empty burrow project. A symlink to the location in your GOPATH is created if this command is run outside the GOPATH.",
+			Usage:       "Creates a new folder that contains an empty burrow project (deprecation stub).",
+			Description: "This action used to create a new folder in your GOPATH containing an empty burrow project. A symlink to the location in your GOPATH was created if this command is run outside the GOPATH. This action is now deprecated as new go projects should be created with the 'go mod' tool!",
 			Action:      actions.New,
 		},
 		{
 			Name:        "clone",
 			Aliases:     []string{},
 			Flags:       []cli.Flag{},
-			Usage:       "Clone a git repository into your GOPATH and create a symbolic link in your current location when not inside GOPATH.",
-			Description: "This action clones a git repository (go-get url scheme) into your GOPATH and creates a symbolic link in the current directory if the current directory is not located in the GOPATH.",
+			Usage:       "Clone a git repository into your current directory.",
+			Description: "This action clones a git repository (go-get url scheme) into your current directory.",
 			Action:      actions.Clone,
 		},
 		{
 			Name:        "get",
 			Aliases:     []string{},
 			Flags:       []cli.Flag{},
-			Usage:       "Install a dependency in the vendor folder and add it to the glide yaml.",
-			Description: "This runs glide get in the current directory. The first argument should be the go-get url and any argument following -- get passed directly to glide.",
+			Usage:       "Add a dependency to the go.mod file.",
+			Description: "This runs 'go get' in the current directory. The first argument should be the url and any argument following -- get passed directly to 'go get'.",
 			Action:      utils.WrapAction(actions.Get),
 		},
 		{
 			Name:        "fetch",
 			Aliases:     []string{"ensure", "f", "e"},
 			Flags:       []cli.Flag{},
-			Usage:       "Get all dependencies from the lock file to reproduce a build.",
-			Description: "This runs glide install in the current directory. Any arguments following -- get passed directly to glide.",
+			Usage:       "Get all dependencies from the go.sum file to reproduce a build.",
+			Description: "This runs 'go mod download' in the current directory. Any arguments following -- get passed directly to 'go mod download'.",
 			Action:      utils.WrapAction(actions.Fetch),
 		},
 		{
 			Name:        "update",
 			Aliases:     []string{"u", "up"},
 			Flags:       []cli.Flag{},
-			Usage:       "Update all dependencies from the yaml file and update the lock file.",
-			Description: "This runs glide update in the current directory. Any arguments following -- get passed directly to gilde.",
+			Usage:       "Update all dependencies from the go.mod file and update the go.sum file.",
+			Description: "This runs 'go get -u' in the current directory. Any arguments following -- get passed directly to 'go get'.",
 			Action:      utils.WrapAction(actions.Update),
 		},
 		{
 			Name:        "run",
 			Aliases:     []string{"r"},
 			Flags:       []cli.Flag{exampleFlag},
-			Usage:       "Build and run the application.",
-			Description: "This runs the compiled binary. Any arguments following -- will be directly passed to your application.",
+			Usage:       "Run the application.",
+			Description: "This runs the main package with 'go run'. Any arguments following -- will be directly passed to your application.",
 			Action:      utils.WrapAction(actions.Run),
 		},
 		{
@@ -145,7 +145,7 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Aliases:     []string{"t"},
 			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Run all existing tests of the application.",
-			Description: "This runs go test in the current directory. Any arguments following -- will be directly passed to go.",
+			Description: "This runs 'go test' in the current directory. Any arguments following -- will be directly passed to 'go test'.",
 			Action:      utils.WrapAction(actions.Test),
 		},
 		{
@@ -153,7 +153,7 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Aliases:     []string{"b"},
 			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Build the application.",
-			Description: "This runs go build in the current directory for your application and all examples. Any arguments following -- will be directly passed to go.",
+			Description: "This runs 'go build' in the current directory for your application and all examples. Any arguments following -- will be directly passed to 'go build'.",
 			Action:      utils.WrapAction(actions.Build),
 		},
 		{
@@ -161,7 +161,7 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Aliases:     []string{"i", "in", "inst"},
 			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Install the application in the GOPATH.",
-			Description: "This runs go install in the current directory.",
+			Description: "This runs 'go install' in the current directory.",
 			Action:      actions.Install,
 		},
 		{
@@ -169,7 +169,7 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Aliases:     []string{"un", "uninst"},
 			Flags:       []cli.Flag{},
 			Usage:       "Uninstall the application from the GOPATH.",
-			Description: "This run go clean -i in the current directory.",
+			Description: "This run 'go clean -i' in the current directory.",
 			Action:      actions.Uninstall,
 		},
 		{
@@ -177,7 +177,7 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Aliases:     []string{"pack"},
 			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Create a .tar.gz containing the binary.",
-			Description: "This runs tar to package your application.",
+			Description: "This runs 'tar' to package your application.",
 			Action:      actions.Package,
 		},
 		{
@@ -185,7 +185,7 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Aliases:     []string{"pub"},
 			Flags:       []cli.Flag{},
 			Usage:       "Publish the current version by building a package and setting a version tag in git.",
-			Description: "This runs git tag -f vX.Y.Z in the current directory. Any arguments following -- will be directly passed to git.",
+			Description: "This runs 'git tag -f vX.Y.Z' in the current directory. Any arguments following -- will be directly passed to git.",
 			Action:      utils.WrapAction(actions.Publish),
 		},
 		{
@@ -193,7 +193,7 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Aliases:     []string{},
 			Flags:       []cli.Flag{},
 			Usage:       "Clean the project from any build artifacts.",
-			Description: "This runs go clean in the current directory and removes artifacts created by burrow.",
+			Description: "This runs 'go clean' in the current directory and removes artifacts created by burrow.",
 			Action:      actions.Clean,
 		},
 		{
@@ -201,23 +201,23 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Aliases:     []string{},
 			Flags:       []cli.Flag{forceFlag},
 			Usage:       "Host the go documentation on this machine.",
-			Description: "This runs go doc in the current directory. Any arguments following -- will be directly passed to go doc.",
+			Description: "This runs 'godoc' in the current directory. Any arguments following -- will be directly passed to 'godoc'.",
 			Action:      utils.WrapAction(actions.Doc),
 		},
 		{
 			Name:        "format",
 			Aliases:     []string{"fmt"},
 			Flags:       []cli.Flag{forceFlag},
-			Usage:       "Format the code of this project with gofmt.",
-			Description: "This runs gofmt in the current directory. Any arguments following -- will be directly passed to gofmt.",
+			Usage:       "Format the code of this project with 'go fmt'.",
+			Description: "This runs 'go fmt' in the current directory. Any arguments following -- will be directly passed to 'go fmt'.",
 			Action:      utils.WrapAction(actions.Format),
 		},
 		{
 			Name:        "check",
 			Aliases:     []string{"vet"},
 			Flags:       []cli.Flag{forceFlag},
-			Usage:       "Check the code with go vet.",
-			Description: "This runs go tool vet in the current directory. Any arguments following -- will be directly passed to go.",
+			Usage:       "Check the code with 'go vet'.",
+			Description: "This runs 'go vet' in the current directory. Any arguments following -- will be directly passed to 'go vet'.",
 			Action:      utils.WrapAction(actions.Check),
 		},
 		{
@@ -244,7 +244,17 @@ burrow - Copyright (c) 2017-2018  EmbeddedEnterprises
 			Description: "This increments the version number stored in the burrow.yaml file by the patch part of the semantic version string.",
 			Action:      actions.Patch,
 		},
+		{
+			Name:        "migrate",
+			Aliases:     []string{},
+			Flags:       []cli.Flag{},
+			Usage:       "Migrate project to the new 'go mod' project type.",
+			Description: "This migrates an old glide based burrow project into a plain 'go mod' project.",
+			Action:      actions.Migrate,
+		},
 	}
 
 	app.Run(os.Args)
+
+	utils.LogDeprecationMessage()
 }

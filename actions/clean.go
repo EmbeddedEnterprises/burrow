@@ -45,10 +45,19 @@ func Clean(context *cli.Context) error {
 		return err
 	}
 
-	return filepath.Walk("./package", func(path string, f os.FileInfo, err error) error {
+	err := filepath.Walk("./package", func(path string, f os.FileInfo, err error) error {
 		if f == nil || f.IsDir() {
 			return nil
 		}
 		return os.Remove(path)
 	})
+
+	deprecationArgs := make([][]string, 0)
+	deprecationArgs = append(deprecationArgs, []string{"go", "clean"})
+	deprecationArgs = append(deprecationArgs, []string{"rm", "-rf", "./bin/*"})
+	deprecationArgs = append(deprecationArgs, []string{"rm", "-rf", "./package/*"})
+
+	burrow.Deprecation("clean", deprecationArgs...)
+
+	return err
 }

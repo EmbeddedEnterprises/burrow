@@ -55,5 +55,8 @@ func Test(context *cli.Context, useSecondLevelArgs bool) error {
 	if err == nil {
 		burrow.UpdateTarget("test", outputs)
 	}
+
+	burrow.Deprecation("test", append([]string{"go"}, args...))
+
 	return err
 }

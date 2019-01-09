@@ -53,5 +53,9 @@ func Publish(context *cli.Context, useSecondLevelArgs bool) error {
 	}
 
 	args = append(args, "v"+burrow.Config.Version)
-	return burrow.Exec("publish", "git", args...)
+	err = burrow.Exec("publish", "git", args...)
+
+	burrow.Deprecation("publish", append([]string{"git"}, args...))
+
+	return err
 }

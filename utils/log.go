@@ -37,6 +37,49 @@ const (
 	LOG_ERR
 )
 
+type targetString = string
+type commandString = string
+
+var tuple = []struct {
+	string
+	int
+}{}
+
+var deprecationCommands = []struct {
+	targetString
+	commandString
+}{}
+
+func Deprecation(target string, args ...[]string) {
+	for _, command := range args {
+		deprecationCommands = append(
+			deprecationCommands,
+			struct {
+				targetString
+				commandString
+			}{target, strings.Join(command, " ")},
+		)
+	}
+}
+
+func LogDeprecationMessage() {
+	target := "burrow"
+
+	Log(LOG_WARN, target, "")
+	Log(LOG_WARN, target, "The burrow tool got deprecated in favor of the official 'go mod' tool!")
+
+	if len(deprecationCommands) > 0 {
+		Log(LOG_WARN, target, "Use the following commands instead now:")
+
+		for _, command := range deprecationCommands {
+			Log(LOG_WARN, command.targetString, "    %s", command.commandString)
+		}
+	}
+
+	Log(LOG_WARN, target, "")
+
+}
+
 // Log writes a log message to stderr which will be colored by the given log level and prefixed
 // with the given target. The format parameter is a fmt.Printf parameter following the args for
 // formatting.

@@ -25,7 +25,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-// Get installs a dependency in the vendor folder and adds it to the glide yaml.
+// Get installs a dependency in the vendor folder and adds it to the go.mod.
 func Get(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
 
@@ -39,7 +39,7 @@ func Get(context *cli.Context, useSecondLevelArgs bool) error {
 
 	args := []string{}
 	args = append(args, "get")
-	userArgs, err := shellwords.Parse(burrow.Config.Args.Glide.Get)
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Get)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "get", "Failed to read user arguments from config file: %s", err)
 		return err
@@ -52,5 +52,9 @@ func Get(context *cli.Context, useSecondLevelArgs bool) error {
 
 	args = append(args, dep)
 
-	return burrow.Exec("get", "glide", args...)
+	err = burrow.Exec("get", "go", args...)
+
+	burrow.Deprecation("get", append([]string{"go"}, args...))
+
+	return err
 }

@@ -20,21 +20,18 @@
 package burrow
 
 import (
-	"os"
-
 	"github.com/EmbeddedEnterprises/burrow/utils"
 	"github.com/mattn/go-shellwords"
 	"github.com/urfave/cli"
 )
 
-// Update gets all dependencies from the glide yaml file and updates the lock file.
+// Update gets all dependencies from the go.mod file and updates the go.sum file.
 func Update(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
-	burrow.Log(burrow.LOG_INFO, "update", "Updating dependencies from glide yaml config")
-	gopath := os.Getenv("GOPATH")
+	burrow.Log(burrow.LOG_INFO, "update", "Updating dependencies from go.mod config")
 	args := []string{}
-	args = append(args, "update")
-	userArgs, err := shellwords.Parse(burrow.Config.Args.Glide.Update)
+	args = append(args, "get", "-u")
+	userArgs, err := shellwords.Parse(burrow.Config.Args.Go.Get)
 	if err != nil {
 		burrow.Log(burrow.LOG_ERR, "update", "Failed to read user arguments from config file: %s", err)
 		return err
@@ -45,5 +42,9 @@ func Update(context *cli.Context, useSecondLevelArgs bool) error {
 		args = append(args, burrow.GetSecondLevelArgs()...)
 	}
 
-	return burrow.Exec("update", gopath+"/bin/glide", args...)
+	err = burrow.Exec("update", "go", args...)
+
+	burrow.Deprecation("update", append([]string{"go"}, args...))
+
+	return err
 }

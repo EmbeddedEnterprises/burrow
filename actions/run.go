@@ -29,10 +29,6 @@ import (
 func Run(context *cli.Context, useSecondLevelArgs bool) error {
 	burrow.LoadConfig()
 
-	if err := Build(context, false); err != nil {
-		return err
-	}
-
 	example := context.String("example")
 
 	userArgs, err := shellwords.Parse(burrow.Config.Args.Run)
@@ -42,6 +38,7 @@ func Run(context *cli.Context, useSecondLevelArgs bool) error {
 	}
 
 	args := []string{}
+	args = append(args, "run")
 	args = append(args, userArgs...)
 
 	if useSecondLevelArgs {
@@ -50,9 +47,19 @@ func Run(context *cli.Context, useSecondLevelArgs bool) error {
 
 	if example == "" {
 		burrow.Log(burrow.LOG_INFO, "run", "Running project")
-		return burrow.Exec("", "./bin/"+burrow.Config.Name, args...)
+		args = append(args, ".")
+		err = burrow.Exec("", "go", args...)
+
+		burrow.Deprecation("run", append([]string{"go"}, args...))
+
+		return err
 	}
 
 	burrow.Log(burrow.LOG_INFO, "run", "Running example %s", example)
-	return burrow.Exec("", "./bin/example/"+example, args...)
+	args = append(args, "./example/"+example+".go")
+	err = burrow.Exec("", "go", args...)
+
+	burrow.Deprecation("run", append([]string{"go"}, args...))
+
+	return err
 }

@@ -29,6 +29,8 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Migrate migrates an old style glide based burrow project to a 'go mod' based one.
+// nolint: gocyclo
 func Migrate(context *cli.Context) error {
 	target := "migrate"
 	gopath := os.Getenv("GOPATH")
@@ -66,6 +68,7 @@ func Migrate(context *cli.Context) error {
 		)
 		return cli.NewExitError("", burrow.EXIT_ACTION)
 	}
+	defer os.Chdir(cwd)
 
 	if strings.HasPrefix(cwd, gopath) {
 		burrow.Log(
@@ -139,7 +142,7 @@ func Migrate(context *cli.Context) error {
 			)
 			return cli.NewExitError("", burrow.EXIT_ACTION)
 		}
-		source = filepath.Join(gopath, args[0])
+		source = filepath.Join(gopath, "src", args[0])
 
 		if _, err := os.Stat(source); err != nil {
 			burrow.Log(
@@ -153,20 +156,21 @@ func Migrate(context *cli.Context) error {
 		destination = filepath.Join(cwd, filepath.Base(source))
 	}
 
+	stat, err := os.Lstat(destination)
+	if err == nil && stat.Mode()&os.ModeSymlink == 0 {
+		burrow.Log(
+			burrow.LOG_ERR,
+			target,
+			"Destination path already exists!",
+		)
+		return cli.NewExitError("", burrow.EXIT_ACTION)
+	}
+
 	if err := os.Remove(destination); inBurrowProject && err != nil {
 		burrow.Log(
 			burrow.LOG_ERR,
 			target,
 			"Failed to remove symlink of burrow project!",
-		)
-		return cli.NewExitError("", burrow.EXIT_ACTION)
-	}
-
-	if _, err := os.Stat("/path/to/whatever"); !os.IsNotExist(err) {
-		burrow.Log(
-			burrow.LOG_ERR,
-			target,
-			"Destination path already exists!",
 		)
 		return cli.NewExitError("", burrow.EXIT_ACTION)
 	}
@@ -180,9 +184,7 @@ func Migrate(context *cli.Context) error {
 		return cli.NewExitError("", burrow.EXIT_ACTION)
 	}
 
-	if inBurrowProject {
-		os.Chdir(destination)
-	}
+	os.Chdir(destination)
 
 	goURI, err := filepath.Rel(filepath.Join(gopath, "src"), source)
 	if err != nil {

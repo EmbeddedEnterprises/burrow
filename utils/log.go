@@ -50,6 +50,8 @@ var deprecationCommands = []struct {
 	commandString
 }{}
 
+// Deprecation marks a target for deprecation and provide underlying commands as
+// args to the deprecation log.
 func Deprecation(target string, args ...[]string) {
 	for _, command := range args {
 		deprecationCommands = append(
@@ -62,6 +64,7 @@ func Deprecation(target string, args ...[]string) {
 	}
 }
 
+// LogDeprecationMessage logs all accumulated deprecation messages to the console.
 func LogDeprecationMessage() {
 	target := "burrow"
 

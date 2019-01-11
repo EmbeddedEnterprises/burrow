@@ -69,6 +69,40 @@ func LoadConfig() {
 		return
 	}
 
+	if _, err := os.Stat("glide.yaml"); err == nil {
+		Log(
+			LOG_ERR,
+			"burrow",
+			"This project is an old glide based project. This project needs migration to the",
+		)
+		Log(
+			LOG_ERR,
+			"burrow",
+			"new 'go mod' module system. Please use",
+		)
+		Log(
+			LOG_ERR,
+			"burrow",
+			"",
+		)
+		Log(
+			LOG_ERR,
+			"burrow",
+			"    burrow migrate",
+		)
+		Log(
+			LOG_ERR,
+			"burrow",
+			"",
+		)
+		Log(
+			LOG_ERR,
+			"burrow",
+			"from outside the GOPATH to migrate this project!",
+		)
+		os.Exit(EXIT_CONFIG)
+	}
+
 	data, err := ioutil.ReadFile("burrow.yaml")
 
 	if err != nil {

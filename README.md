@@ -84,6 +84,7 @@ Commands:
    major                  Increment the major part of the version for this project.
    minor                  Increment the minor part of the version for this project.
    patch                  Increment the patch part of the version for this project.
+   migrate                Migrate project to the new 'go mod' project type.
    help, h                Shows a list of commands or help for one command
 
 Global options:
